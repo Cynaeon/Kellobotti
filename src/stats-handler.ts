@@ -5,7 +5,7 @@ import stats from '../stats/stats.json';
 
 export abstract class StatsHandler {
     static getTopList(): StatsModel[] {
-        return stats.sort((a, b) => a.score - b.score);
+        return stats.sort((a, b) => b.score - a.score);
     }
     
     static getStatStringForUser(userId: string): string {
