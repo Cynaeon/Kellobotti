@@ -21,9 +21,10 @@ class BotCommands {
         await interaction.reply(StatsHandler.getStatStringForUser(interaction.user.id));
     }
 
-    /* @Slash("userkello", { description: 'Display selected user\'s kello stats.' })
-    async userkello(@SlashOption() interaction: CommandInteraction): Promise<void> {
-    } */
+    @Slash("userkello", { description: 'DOES NOT WORK YET.' })
+    async userkello(interaction: CommandInteraction): Promise<void> {
+        await interaction.reply( { content: 'Command does not yet work.', ephemeral: true });
+    }
 
     @Slash("totalkello", { description: 'Display total kello.' })
     async totalkello(interaction: CommandInteraction): Promise<void> {
