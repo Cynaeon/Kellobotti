@@ -5,35 +5,33 @@ import { dirname, importx } from "@discordx/importer";
 import { CronJob } from "cron";
 import { StatsHandler } from "./stats-handler";
 import config from '../config.json'; 
+import { Globals } from "./globals";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
 });
-
-let kelloOn = false;
-let postedToday: string[] = [];
 
 client.on("ready", () => {
     console.log("Bot ready!");
     client.initApplicationCommands();
 
     new CronJob('00 37 13 * * *', () => {
-        kelloOn = true;
+        Globals.kelloOn = true;
     }, null, true, 'Europe/Helsinki');
 
     new CronJob('00 38 13 * * *', () => {
-        kelloOn = false;
+        Globals.kelloOn = false;
         const topKelloUser = StatsHandler.getTopList()[0];
 
-        if (postedToday.length > 0 && !postedToday.includes(topKelloUser.userId)) {
+        if (Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
             // Mock the player in first place since they missed the kello
             const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
-            const emoji = client.emojis.cache.get('645997733894684692'); // Nauris
-            channel?.send(`${topKelloUser.userName} ${emoji}`);
+            const nauris = client.emojis.cache.get('645997733894684692');
+            channel?.send(`${topKelloUser.userName} ${nauris}`);
         }
 
-        StatsHandler.resetStreakForUsersExcept(postedToday);
-        postedToday = []; 
+        StatsHandler.resetStreakForUsersExcept(Globals.postedToday);
+        Globals.postedToday = []; 
     }, null, true, 'Europe/Helsinki');
 });
 
@@ -44,13 +42,13 @@ client.on("interactionCreate", (interaction: Interaction) => {
 client.on('messageCreate', (message: Message) => {
     const userId = message.author.id;
     if (
-        !kelloOn
+        !Globals.kelloOn
         || message.channelId !== config.channelId
-        || postedToday.includes(userId)
+        || Globals.postedToday.includes(userId)
     ) { return; }
 
     StatsHandler.increaseUserScore(message.author);
-    postedToday.push(message.author.id);
+    Globals.postedToday.push(message.author.id);
     setTimeout(() => thumbsUp(message), 1000);
 });
 
