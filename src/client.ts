@@ -50,6 +50,7 @@ client.on('messageCreate', (message: Message) => {
     ) { return; }
 
     StatsHandler.increaseUserScore(message.author);
+    postedToday.push(message.author.id);
     setTimeout(() => thumbsUp(message), 1000);
 });
 
