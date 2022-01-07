@@ -61,7 +61,10 @@ async function run() {
 run();
 
 function thumbsUp(message: Message) {
-    const emojiId = message.author.id === StatsHandler.getTopList()[0].userId
+    const sharedFirstPlace = StatsHandler.getTopList().length >= 2
+        && StatsHandler.getTopList()[0].score === StatsHandler.getTopList()[1].score;
+
+    const emojiId = !sharedFirstPlace && message.author.id === StatsHandler.getTopList()[0].userId
         ? '890243525361405953' // Hymy hyytyy
         : '406099801814466560'; // Paavopeukku
     message.react(emojiId).catch(() => {
