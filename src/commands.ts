@@ -16,7 +16,7 @@ class BotCommands {
                 await interaction.reply({ content: 'Get!', ephemeral: true });
             }
         } else {
-            await interaction.reply({ content: 'Kello is not.', ephemeral: true });
+            await interaction.reply({ content: 'It\'s not kello', ephemeral: true });
         }
     }
 
