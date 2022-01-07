@@ -4,6 +4,7 @@ import { Globals } from "./globals";
 import { StatsHandler } from "./stats-handler";
 
 @Discord()
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BotCommands {
     @Slash("getkello", { description: 'Get kello!' })
     async getkello(interaction: CommandInteraction): Promise<void> {

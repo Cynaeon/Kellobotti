@@ -14,7 +14,7 @@ const client = new Client({
 
 client.on("ready", () => {
     console.log("Bot ready!");
-    client.initApplicationCommands();
+    void client.initApplicationCommands();
 
     new CronJob('00 37 13 * * *', () => {
         Globals.kelloOn = true;
@@ -28,7 +28,8 @@ client.on("ready", () => {
             // Mock the player in first place since they missed the kello
             const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
             const nauris = client.emojis.cache.get('645997733894684692');
-            channel?.send(`${topKelloUser.userName} ${nauris}`);
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            void channel?.send(`${topKelloUser.userName} ${nauris}`);
         }
 
         StatsHandler.resetStreakForUsersExcept(Globals.postedToday);
@@ -55,10 +56,10 @@ client.on('messageCreate', (message: Message) => {
 
 async function run() {
     await importx(dirname(import.meta.url) + "/commands.{ts,js}");
-    client.login(config.token);
+    void client.login(config.token);
 }
 
-run();
+void run();
 
 function thumbsUp(message: Message) {
     const sharedFirstPlace = StatsHandler.getTopList().length >= 2
@@ -67,7 +68,5 @@ function thumbsUp(message: Message) {
     const emojiId = !sharedFirstPlace && message.author.id === StatsHandler.getTopList()[0].userId
         ? '890243525361405953' // Hymy hyytyy
         : '406099801814466560'; // Paavopeukku
-    message.react(emojiId).catch(() => {
-        message.react('👌');
-    });
+    message.react(emojiId).catch(() => void message.react('👌'));
 }

@@ -17,17 +17,17 @@ export abstract class StatsHandler {
         const score = stat.score
         const streak = stat.streak;
         const medal = getMedalEmoji(standing);
-        let statsString = medal + standing + '. ' + userName + ': ' + '**' + score + '**';
+        let statsString = `${medal} ${standing}. ${userName}:**${score}**`;
         if (streak) {
-            statsString += ' (' + streak + ' streak)';
+            statsString += ` (${streak} streak)`;
         }
-        statsString += '\n';
+         statsString += '\n';
         return statsString;
     }
 
     static getTotalKelloScore(): string {
         const totalKello = stats.reduce((prev, curr) => prev + curr.score, 0);
-        return 'Total: **' + totalKello + '**';
+        return `Total: **${totalKello}**`;
     }
 
     static increaseUserScore(user: User): void {
