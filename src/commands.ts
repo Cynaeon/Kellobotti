@@ -12,6 +12,7 @@ class BotCommands {
                 await interaction.reply({ content: 'Already got.', ephemeral: true });
             } else {
                 StatsHandler.increaseUserScore(interaction.user);
+                Globals.postedToday.push(interaction.user.id);
                 await interaction.reply({ content: 'Get!', ephemeral: true });
             }
         } else {
