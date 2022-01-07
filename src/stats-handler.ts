@@ -12,7 +12,7 @@ export abstract class StatsHandler {
         const stat = stats.find(s => s.userId === userId);
         if (!stat) { return 'No stats!' }
 
-        const standing = StatsHandler.getTopList().findIndex(x => x.userId === userId) + 1;
+        const standing = getStanding(stat);
         const userName = stat.userName;
         const score = stat.score
         const streak = stat.streak;
@@ -62,4 +62,13 @@ function save() {
     fs.writeFile("stats/stats.json", JSON.stringify(stats), (err) => {
         if (err) { console.error('Error saving stats: ', err); }
     });
+}
+
+function getStanding(stat: StatsModel): number {
+    let usersWithHigherScore = 0;
+    stats.forEach(s => {
+        if (s.score > stat.score) { usersWithHigherScore++; }
+    });
+    
+    return usersWithHigherScore + 1;
 }
