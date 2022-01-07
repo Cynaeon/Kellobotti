@@ -16,7 +16,8 @@ export abstract class StatsHandler {
         const userName = stat.userName;
         const score = stat.score
         const streak = stat.streak;
-        let statsString = standing + '. ' + userName + ': ' + '**' + score + '**';
+        const medal = getMedalEmoji(standing);
+        let statsString = medal + standing + '. ' + userName + ': ' + '**' + score + '**';
         if (streak) {
             statsString += ' (' + streak + ' streak)';
         }
@@ -71,4 +72,17 @@ function getStanding(stat: StatsModel): number {
     });
     
     return usersWithHigherScore + 1;
+}
+
+function getMedalEmoji(standing: number): string {
+    switch (standing) {
+        case 1:
+            return '<:first_place:929025322660278352>';
+        case 2: 
+            return '<:second_place:929025582954582087>';
+        case 3: 
+            return '<:third_place:929025920516362330>';
+        default:
+            return '';
+    }
 }
