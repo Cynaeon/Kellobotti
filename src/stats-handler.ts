@@ -17,7 +17,7 @@ export abstract class StatsHandler {
         const score = stat.score
         const streak = stat.streak;
         const medal = getMedalEmoji(standing);
-        let statsString = `${medal} ${standing}. ${userName}:**${score}**`;
+        let statsString = `${medal} ${standing}. ${userName}: **${score}**`;
         if (streak) {
             statsString += ` (${streak} streak)`;
         }
