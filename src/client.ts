@@ -49,9 +49,9 @@ client.on('messageCreate', (message: Message) => {
         || Globals.postedToday.includes(userId)
     ) { return; }
 
+    thumbsUp(message);
     StatsHandler.increaseUserScore(message.author);
     Globals.postedToday.push(message.author.id);
-    setTimeout(() => thumbsUp(message), 1000);
 });
 
 async function run() {
@@ -68,5 +68,7 @@ function thumbsUp(message: Message) {
     const emojiId = !sharedFirstPlace && message.author.id === StatsHandler.getTopList()[0].userId
         ? '890243525361405953' // Hymy hyytyy
         : '406099801814466560'; // Paavopeukku
-    message.react(emojiId).catch(() => void message.react('👌'));
+    setTimeout(() => {
+        message.react(emojiId).catch(() => void message.react('👌'));
+    }, 1000);
 }
