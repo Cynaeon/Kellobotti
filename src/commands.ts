@@ -1,5 +1,5 @@
-import { CommandInteraction } from "discord.js";
-import { Discord, Slash } from "discordx";
+import { CommandInteraction, User } from "discord.js";
+import { Discord, Slash, SlashOption } from "discordx";
 import { Globals } from "./globals";
 import { StatsHandler } from "./stats-handler";
 
@@ -7,22 +7,22 @@ import { StatsHandler } from "./stats-handler";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BotCommands {
     @Slash("getkello", { description: 'Get kello!' })
-    async getkello(interaction: CommandInteraction): Promise<void> {
+    getkello(interaction: CommandInteraction): void {
         if (Globals.kelloOn) {
             if (Globals.postedToday.includes(interaction.user.id)) {
-                await interaction.reply({ content: 'Already got.', ephemeral: true });
+                void interaction.reply({ content: 'Already got.', ephemeral: true });
             } else {
                 StatsHandler.increaseUserScore(interaction.user);
                 Globals.postedToday.push(interaction.user.id);
-                await interaction.reply({ content: 'Get!', ephemeral: true });
+                void interaction.reply({ content: 'Get!', ephemeral: true });
             }
         } else {
-            await interaction.reply({ content: 'It\'s not kello', ephemeral: true });
+            void interaction.reply({ content: 'It\'s not kello', ephemeral: true });
         }
     }
 
     @Slash("topkello", { description: 'List the most kello people.' })
-    async topkello(interaction: CommandInteraction): Promise<void> {
+    topkello(interaction: CommandInteraction): void {
         const topList = StatsHandler.getTopList();
         let statsString = '';
         for (let i = 0; i < topList.length; i++) {
@@ -30,21 +30,24 @@ class BotCommands {
             statsString += StatsHandler.getStatStringForUser(user.userId);
             if (i >= 4) { break; }
         }
-        await interaction.reply(statsString || 'No stats!');
+        void interaction.reply(statsString || 'No stats!');
     }
 
     @Slash("mykello", { description: 'Display your stats.' })
-    async mykello(interaction: CommandInteraction): Promise<void> {
-        await interaction.reply(StatsHandler.getStatStringForUser(interaction.user.id));
+    mykello(interaction: CommandInteraction): void {
+        void interaction.reply(StatsHandler.getStatStringForUser(interaction.user.id));
     }
 
-    @Slash("userkello", { description: 'DOES NOT WORK YET.' })
-    async userkello(interaction: CommandInteraction): Promise<void> {
-        await interaction.reply( { content: 'Command does not yet work.', ephemeral: true });
+    @Slash("userkello", { description: 'Display user\'s stats.' })
+    userkello(
+        @SlashOption("user", { type: "USER" }) user: User,
+        interaction: CommandInteraction
+    ): void {
+        void interaction.reply(StatsHandler.getStatStringForUser(user.id));
     }
 
     @Slash("totalkello", { description: 'Display total kello.' })
-    async totalkello(interaction: CommandInteraction): Promise<void> {
-        await interaction.reply(StatsHandler.getTotalKelloScore());
+    totalkello(interaction: CommandInteraction): void {
+        void interaction.reply(StatsHandler.getTotalKelloScore());
     }
 }
