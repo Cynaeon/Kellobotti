@@ -1,0 +1,13 @@
+diff --git a/node_modules/discordx/build/esm/decorators/decorators/SlashOption.js b/node_modules/discordx/build/esm/decorators/decorators/SlashOption.js
+index 1ec7c47..737c82f 100644
+--- a/node_modules/discordx/build/esm/decorators/decorators/SlashOption.js
++++ b/node_modules/discordx/build/esm/decorators/decorators/SlashOption.js
+@@ -1,7 +1,7 @@
+ import { DApplicationCommand, DApplicationCommandOption, MetadataStorage, Modifier, SlashOptionTypes, } from "../../index.js";
+ export function SlashOption(name, params) {
+     return function (target, key, index) {
+-        const dType = Reflect.getMetadata("design:paramtypes", target, key)[index].name.toUpperCase();
++        const dType = Reflect.getMetadata("design:paramtypes", target, key)?.[index].name.toUpperCase();
+         const type = params?.type ??
+             (dType === "GUILDMEMBER"
+                 ? "USER"
