@@ -7,13 +7,21 @@ import { StatsHandler } from "./stats-handler";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BotCommands {
     @Slash("getkello", { description: 'Get kello!' })
-    getkello(interaction: CommandInteraction): void {
+    getkello(
+        @SlashOption("message", {
+            description: "Write an optional message",
+            type: 'STRING',
+            required: false
+        }) message: string | undefined,
+        interaction: CommandInteraction
+    ): void {
         if (Globals.kelloOn) {
             if (Globals.postedToday.includes(interaction.user.id)) {
                 void interaction.reply({ content: 'Already got.', ephemeral: true });
             } else {
                 StatsHandler.increaseUserScore(interaction.user);
                 Globals.postedToday.push(interaction.user.id);
+                Globals.commandGets.push({ userName: interaction.user.username, message });
                 void interaction.reply({ content: 'Get!', ephemeral: true });
             }
         } else {

@@ -23,10 +23,22 @@ client.on("ready", () => {
     new CronJob('00 38 13 * * *', () => {
         Globals.kelloOn = false;
         const topKelloUser = StatsHandler.getTopList()[0];
+        const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
+
+        if (Globals.commandGets.length) {
+            let commandMessageStr = 'Command gets:\n';
+            Globals.commandGets.forEach(get => {
+                commandMessageStr += get.userName;
+                if (get.message) {
+                    commandMessageStr += `: "${get.message}"`
+                }
+                commandMessageStr += '\n';
+            });
+            void channel?.send(commandMessageStr);
+        }
 
         if (Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
             // Mock the player in first place since they missed the kello
-            const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
             const nauris = client.emojis.cache.get('645997733894684692');
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             void channel?.send(`${topKelloUser.userName} ${nauris}`);
@@ -34,6 +46,7 @@ client.on("ready", () => {
 
         StatsHandler.resetStreakForUsersExcept(Globals.postedToday);
         Globals.postedToday = []; 
+        Globals.commandGets = [];
     }, null, true, 'Europe/Helsinki');
 });
 
