@@ -37,6 +37,8 @@ client.on("ready", () => {
             void channel?.send(commandMessageStr);
         }
 
+        void channel?.send(StatsHandler.getScoreboard(5));
+
         if (Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
             // Mock the player in first place since they missed the kello
             const nauris = client.emojis.cache.get('645997733894684692');

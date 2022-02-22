@@ -29,16 +29,9 @@ class BotCommands {
         }
     }
 
-    @Slash("topkello", { description: 'List the most kello people.' })
+    @Slash("topkello", { description: 'List five of the most kello people.' })
     topkello(interaction: CommandInteraction): void {
-        const topList = StatsHandler.getTopList();
-        let statsString = '';
-        for (let i = 0; i < topList.length; i++) {
-            const user = topList[i];
-            statsString += StatsHandler.getStatStringForUser(user.userId);
-            if (i >= 4) { break; }
-        }
-        void interaction.reply(statsString || 'No stats!');
+        void interaction.reply(StatsHandler.getScoreboard(5) || 'No stats!');
     }
 
     @Slash("mykello", { description: 'Display your stats.' })

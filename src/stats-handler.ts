@@ -7,6 +7,17 @@ export abstract class StatsHandler {
     static getTopList(): StatsModel[] {
         return stats.sort((a, b) => b.score - a.score);
     }
+
+    static getScoreboard(entriesLength?: number): string {
+        const topList = StatsHandler.getTopList();
+        let statsString = '';
+        for (let i = 0; i < topList.length; i++) {
+            const user = topList[i];
+            statsString += StatsHandler.getStatStringForUser(user.userId);
+            if (entriesLength && i >= entriesLength - 1) { break; }
+        }
+        return statsString;
+    }
     
     static getStatStringForUser(userId: string): string {
         const stat = stats.find(s => s.userId === userId);
