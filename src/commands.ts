@@ -34,6 +34,11 @@ class BotCommands {
         void interaction.reply(StatsHandler.getScoreboard(5) || 'No stats!');
     }
 
+    @Slash("fulltopkello", { description: 'List complete scoreboard.' })
+    fulltopkello(interaction: CommandInteraction): void {
+        void interaction.reply({ content: StatsHandler.getScoreboard() || 'No stats!', ephemeral: true });
+    }
+
     @Slash("mykello", { description: 'Display your stats.' })
     mykello(interaction: CommandInteraction): void {
         void interaction.reply(StatsHandler.getStatStringForUser(interaction.user.id));
