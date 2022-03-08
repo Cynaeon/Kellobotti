@@ -65,7 +65,7 @@ client.on('messageCreate', (message: Message) => {
     ) { return; }
 
     thumbsUp(message);
-    StatsHandler.increaseUserScore(message.author);
+    StatsHandler.increaseUserScore(message.author, message.createdTimestamp);
     Globals.postedToday.push(message.author.id);
 });
 

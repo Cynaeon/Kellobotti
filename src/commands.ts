@@ -19,7 +19,7 @@ class BotCommands {
             if (Globals.postedToday.includes(interaction.user.id)) {
                 void interaction.reply({ content: 'Already got.', ephemeral: true });
             } else {
-                StatsHandler.increaseUserScore(interaction.user);
+                StatsHandler.increaseUserScore(interaction.user, interaction.createdTimestamp);
                 Globals.postedToday.push(interaction.user.id);
                 Globals.commandGets.push({ userName: interaction.user.username, message });
                 void interaction.reply({ content: 'Get!', ephemeral: true });

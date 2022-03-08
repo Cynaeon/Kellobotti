@@ -49,17 +49,19 @@ export abstract class StatsHandler {
         return `Total: **${totalKello}**`;
     }
 
-    static increaseUserScore(user: User): void {
+    static increaseUserScore(user: User, timestamp: number): void {
         const userStat = stats.find(s => s.userId === user.id);
-        
+        const seconds =  new Date(timestamp).getSeconds();
+        const points = Math.round(100 - seconds * 0.677); // Points scale: 100-60
+
         if (userStat) {
-            userStat.score++;
+            userStat.score += points;
             userStat.streak++;
         } else {
             stats.push({
                 userId: user.id,
                 userName: user.username,
-                score: 1,
+                score: points,
                 streak: 1,
             });
         }
