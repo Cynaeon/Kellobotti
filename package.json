@@ -16,6 +16,7 @@
         "cron": "^1.8.2",
         "discord.js": "^13.5.1",
         "discordx": "^9.1.9",
+        "markdown-table": "^3.0.2",
         "reflect-metadata": "^0.1.13"
     },
     "devDependencies": {

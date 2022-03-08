@@ -2,38 +2,46 @@ import { StatsModel } from "./models/stats-model";
 import fs from 'fs';
 import { User } from "discord.js";
 import stats from '../stats/stats.json';
+import { markdownTable } from 'markdown-table'
+
+const tableLabels = ['', 'NAME', 'SCORE', 'STREAK'];
 
 export abstract class StatsHandler {
     static getTopList(): StatsModel[] {
         return stats.sort((a, b) => b.score - a.score);
     }
 
-    static getScoreboard(entriesLength?: number): string {
+    static getScoreboard(length?: number): string {
         const topList = StatsHandler.getTopList();
-        let statsString = '';
-        for (let i = 0; i < topList.length; i++) {
+
+        const markdownRows = []
+        markdownRows.push(tableLabels);
+
+        for (let i = 0; i < (length ?? topList.length); i++) {
             const user = topList[i];
-            statsString += StatsHandler.getStatStringForUser(user.userId);
-            if (entriesLength && i >= entriesLength - 1) { break; }
+            const entry = StatsHandler.getStatTableEntryForUser(user.userId);
+            if (entry) {
+                markdownRows.push(entry);
+            }
         }
-        return statsString;
+        return "```" + markdownTable(markdownRows) + "```";
     }
     
-    static getStatStringForUser(userId: string): string {
+    static getStatTableEntryForUser(userId: string): string[] | undefined {
         const stat = stats.find(s => s.userId === userId);
-        if (!stat) { return 'No stats!' }
+        if (!stat) { return; }
 
         const standing = getStanding(stat);
         const userName = stat.userName;
         const score = stat.score
         const streak = stat.streak;
-        const medal = getMedalEmoji(standing);
-        let statsString = `${medal} ${standing}. ${userName}: **${score}**`;
-        if (streak) {
-            statsString += ` (${streak} streak)`;
-        }
-         statsString += '\n';
-        return statsString;
+        return [standing.toString(), userName, score.toString(), streak.toString()];
+    }
+
+    static getStatStringForUser(userId: string): string {
+        const entry = StatsHandler.getStatTableEntryForUser(userId);
+        if (!entry) { return 'No stats!'; }
+        return "```" + markdownTable([tableLabels, entry]) + "```";
     }
 
     static getTotalKelloScore(): string {
