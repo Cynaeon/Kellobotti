@@ -18,6 +18,8 @@ class BotCommands {
         if (Globals.kelloOn) {
             if (Globals.postedToday.includes(interaction.user.id)) {
                 void interaction.reply({ content: 'Already got.', ephemeral: true });
+            } else if (StatsHandler.isUserOnCooldown(interaction.user.id)) {
+                void interaction.reply({ content: 'On cooldown.', ephemeral: true });
             } else {
                 StatsHandler.increaseUserScore(interaction.user, interaction.createdTimestamp);
                 Globals.postedToday.push(interaction.user.id);
@@ -25,6 +27,7 @@ class BotCommands {
                 void interaction.reply({ content: 'Get!', ephemeral: true });
             }
         } else {
+            Globals.getCooldowns[interaction.user.id] = interaction.createdAt;
             void interaction.reply({ content: 'It\'s not kello', ephemeral: true });
         }
     }

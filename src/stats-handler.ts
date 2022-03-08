@@ -3,6 +3,7 @@ import fs from 'fs';
 import { User } from "discord.js";
 import stats from '../stats/stats.json';
 import { markdownTable } from 'markdown-table'
+import { Globals } from "./globals";
 
 const tableLabels = ['', 'NAME', 'SCORE', 'STREAK'];
 
@@ -77,6 +78,16 @@ export abstract class StatsHandler {
         });
 
         save();
+    }
+
+    static isUserOnCooldown(userId: string): boolean {
+        const cooldownSeconds = 5;
+        const cooldownUntil = Globals.getCooldowns[userId]
+            ? new Date(Globals.getCooldowns[userId]).getTime()
+            : undefined;
+        return cooldownUntil
+            ? (new Date().getTime() - cooldownUntil) / 1000 < cooldownSeconds
+            : false;
     }
 }
 

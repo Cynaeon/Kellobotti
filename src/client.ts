@@ -57,12 +57,18 @@ client.on("interactionCreate", (interaction: Interaction) => {
 });
 
 client.on('messageCreate', (message: Message) => {
+    if (message.channelId !== config.channelId) { return; }
+
     const userId = message.author.id;
+
     if (
         !Globals.kelloOn
-        || message.channelId !== config.channelId
         || Globals.postedToday.includes(userId)
-    ) { return; }
+        || StatsHandler.isUserOnCooldown(userId)
+    ) {
+        Globals.getCooldowns[userId] = message.createdAt;
+        return;
+    }
 
     thumbsUp(message);
     StatsHandler.increaseUserScore(message.author, message.createdTimestamp);
