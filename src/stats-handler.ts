@@ -20,6 +20,7 @@ export abstract class StatsHandler {
 
         for (let i = 0; i < (length ?? topList.length); i++) {
             const user = topList[i];
+            if (!user) { break; }
             const entry = StatsHandler.getStatTableEntryForUser(user.userId);
             if (entry) {
                 markdownRows.push(entry);
