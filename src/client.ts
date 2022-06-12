@@ -6,6 +6,7 @@ import { CronJob } from "cron";
 import { StatsHandler } from "./stats-handler";
 import config from '../config.json'; 
 import { Globals } from "./globals";
+import moment from "moment";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -50,6 +51,13 @@ client.on("ready", () => {
         Globals.postedToday = []; 
         Globals.commandGets = [];
     }, null, true, 'Europe/Helsinki');
+
+    // Season reset on the first day of the month
+    const job = new CronJob('0 0 1 * *', () => {
+        StatsHandler.resetSeason();
+    });
+
+    console.log(job.nextDate().diff(moment(), 'days'));
 });
 
 client.on("interactionCreate", (interaction: Interaction) => {

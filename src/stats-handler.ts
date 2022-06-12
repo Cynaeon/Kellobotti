@@ -20,7 +20,7 @@ export abstract class StatsHandler {
 
         for (let i = 0; i < (length ?? topList.length); i++) {
             const user = topList[i];
-            if (!user) { break; }
+            if (!user || user.score === 0) { break; }
             const entry = StatsHandler.getStatTableEntryForUser(user.userId);
             if (entry) {
                 markdownRows.push(entry);
@@ -89,6 +89,15 @@ export abstract class StatsHandler {
         return cooldownUntil
             ? (new Date().getTime() - cooldownUntil) / 1000 < cooldownSeconds
             : false;
+    }
+
+    static resetSeason(): void {
+        const winner = this.getTopList()[0];
+        winner.wins = winner.wins ?? 0 + 1;
+        stats.forEach(s => {
+            s.score = 0;
+            s.streak = 0;
+        });
     }
 }
 

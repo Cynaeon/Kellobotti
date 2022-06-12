@@ -3,4 +3,5 @@ export interface StatsModel {
     userName: string;
     score: number;
     streak: number;
+    wins?: number;
 }
