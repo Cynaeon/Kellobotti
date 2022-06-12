@@ -14,6 +14,8 @@ const client = new Client({
     botGuilds: [config.guildId],
 });
 
+let seasonResetJob: CronJob;
+
 client.on("ready", () => {
     console.log("Bot ready!");
     void client.initApplicationCommands();
@@ -55,11 +57,9 @@ client.on("ready", () => {
     }, null, true, 'Europe/Helsinki');
 
     // Season reset on the first day of the month
-    const job = new CronJob('0 0 1 * *', () => {
+    seasonResetJob = new CronJob('0 0 1 * *', () => {
         StatsHandler.resetSeason();
     });
-
-    console.log(job.nextDate().diff(moment(), 'days'));
 });
 
 client.on("interactionCreate", (interaction: Interaction) => {
@@ -102,4 +102,8 @@ function thumbsUp(message: Message) {
     setTimeout(() => {
         message.react(emojiId).catch(() => void message.react('👌'));
     }, 1000);
+}
+
+export function getDaysUntilSeasonReset(): number {
+    return seasonResetJob.nextDate().diff(moment(), 'days');
 }

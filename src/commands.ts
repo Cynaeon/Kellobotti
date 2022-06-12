@@ -1,5 +1,6 @@
 import { CommandInteraction, User } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
+import { getDaysUntilSeasonReset } from "./client";
 import { Globals } from "./globals";
 import { StatsHandler } from "./stats-handler";
 
@@ -58,5 +59,11 @@ class BotCommands {
     @Slash("totalkello", { description: 'Display total kello.' })
     totalkello(interaction: CommandInteraction): void {
         void interaction.reply(StatsHandler.getTotalKelloScore());
+    }
+
+    @Slash("kelloseason", { description: 'Display days until season reset.' })
+    kelloseason(interaction: CommandInteraction): void {
+        const days = getDaysUntilSeasonReset();
+        void interaction.reply(`Season reset in ${days} days.`);
     }
 }
