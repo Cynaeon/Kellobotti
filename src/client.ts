@@ -7,6 +7,7 @@ import { StatsHandler } from "./stats-handler";
 import config from '../config.json'; 
 import { Globals } from "./globals";
 import moment from "moment";
+import { StatsModel } from "./models/stats-model";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -16,14 +17,15 @@ const client = new Client({
 client.on("ready", () => {
     console.log("Bot ready!");
     void client.initApplicationCommands();
+    let topKelloUser: StatsModel | undefined;
 
     new CronJob('00 37 13 * * *', () => {
+        topKelloUser = StatsHandler.getTopList()[0];
         Globals.kelloOn = true;
     }, null, true, 'Europe/Helsinki');
 
     new CronJob('00 38 13 * * *', () => {
         Globals.kelloOn = false;
-        const topKelloUser = StatsHandler.getTopList()[0];
         const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
 
         if (Globals.commandGets.length) {
@@ -40,7 +42,7 @@ client.on("ready", () => {
 
         void channel?.send(StatsHandler.getScoreboard(5));
 
-        if (Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
+        if (topKelloUser && Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
             // Mock the player in first place since they missed the kello
             const nauris = client.emojis.cache.get('645997733894684692');
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
