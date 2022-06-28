@@ -8,28 +8,30 @@ import { StatsHandler } from "./stats-handler";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BotCommands {
     @Slash("getkello", { description: 'Get kello!' })
-    getkello(
+    async getkello(
         @SlashOption("message", {
             description: "Write an optional message",
             type: 'STRING',
             required: false
         }) message: string | undefined,
         interaction: CommandInteraction
-    ): void {
+    ): Promise<void> {
+        await interaction.deferReply({ ephemeral: true });
+
         if (Globals.kelloOn) {
             if (Globals.postedToday.includes(interaction.user.id)) {
-                void interaction.reply({ content: 'Already got.', ephemeral: true });
+                void interaction.editReply({ content: 'Already got.' });
             } else if (StatsHandler.isUserOnCooldown(interaction.user.id)) {
-                void interaction.reply({ content: 'On cooldown.', ephemeral: true });
+                void interaction.editReply({ content: 'On cooldown.' });
             } else {
                 StatsHandler.increaseUserScore(interaction.user, interaction.createdTimestamp);
                 Globals.postedToday.push(interaction.user.id);
                 Globals.commandGets.push({ userName: interaction.user.username, message });
-                void interaction.reply({ content: 'Get!', ephemeral: true });
+                void interaction.editReply({ content: 'Get!' });
             }
         } else {
             Globals.getCooldowns[interaction.user.id] = interaction.createdAt;
-            void interaction.reply({ content: 'It\'s not kello', ephemeral: true });
+            void interaction.editReply({ content: 'It\'s not kello' });
         }
     }
 
