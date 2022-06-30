@@ -98,6 +98,8 @@ export abstract class StatsHandler {
             s.score = 0;
             s.streak = 0;
         });
+
+        save();
     }
 }
 
