@@ -59,7 +59,7 @@ client.on("ready", () => {
     // Season reset on the first day of the month
     seasonResetJob = new CronJob('0 0 1 * *', () => {
         StatsHandler.resetSeason();
-    });
+    }, null, true, 'Europe/Helsinki');
 });
 
 client.on("interactionCreate", (interaction: Interaction) => {
