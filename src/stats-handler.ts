@@ -6,6 +6,7 @@ import { markdownTable } from 'markdown-table'
 import { Globals } from "./globals";
 
 const tableLabels = ['', 'NAME', 'SCORE', 'STREAK'];
+const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
 
 export abstract class StatsHandler {
     static getTopList(): StatsModel[] {
@@ -40,6 +41,16 @@ export abstract class StatsHandler {
         return [standing.toString(), userName, score.toString(), streak.toString()];
     }
 
+    static getVictoryTableEntryForUser(userId: string): string[] | undefined {
+        const stat = stats.find(s => s.userId === userId);
+        if (!stat || !stat.wins) { return; }
+
+        const standing = getVictoriesStanding(stat);
+        const userName = stat.userName;
+        const wins = stat.wins;
+        return [standing.toString(), userName, wins.toString()];
+    }
+
     static getStatStringForUser(userId: string): string {
         const entry = StatsHandler.getStatTableEntryForUser(userId);
         if (!entry) { return 'No stats!'; }
@@ -49,6 +60,22 @@ export abstract class StatsHandler {
     static getTotalKelloScore(): string {
         const totalKello = stats.reduce((prev, curr) => prev + curr.score, 0);
         return `Total: **${totalKello}**`;
+    }
+
+    static getVictoriesScoreboard(): string {
+        const markdownRows = []
+        markdownRows.push(victoryTableLabels);
+
+        const topList = StatsHandler.getTopList();
+        for (let i = 0; i < topList.length; i++) {
+            const user = topList[i];
+            if (!user || !user.wins) { break; }
+            const entry = StatsHandler.getVictoryTableEntryForUser(user.userId);
+            if (entry) {
+                markdownRows.push(entry);
+            }
+        }
+        return "```" + markdownTable(markdownRows) + "```";
     }
 
     static increaseUserScore(user: User, timestamp: number): void {
@@ -113,6 +140,16 @@ function getStanding(stat: StatsModel): number {
     let usersWithHigherScore = 0;
     stats.forEach(s => {
         if (s.score > stat.score) { usersWithHigherScore++; }
+    });
+    
+    return usersWithHigherScore + 1;
+}
+
+function getVictoriesStanding(stat: StatsModel): number {
+    let usersWithHigherScore = 0;
+    stats.forEach(s => {
+        if (!s.wins) { return; }
+        if (s.wins > (stat.wins ?? 0)) { usersWithHigherScore++; }
     });
     
     return usersWithHigherScore + 1;

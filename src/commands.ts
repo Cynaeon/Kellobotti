@@ -68,4 +68,9 @@ class BotCommands {
         const days = getDaysUntilSeasonReset();
         void interaction.reply(`Season reset in ${days} days.`);
     }
+
+    @Slash("kellovictories", { description: 'List season victories.' })
+    kellovictories(interaction: CommandInteraction): void {
+        void interaction.reply(StatsHandler.getVictoriesScoreboard());
+    }
 }
