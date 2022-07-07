@@ -70,7 +70,8 @@ class BotCommands {
     }
 
     @Slash("kellovictories", { description: 'List season victories.' })
-    kellovictories(interaction: CommandInteraction): void {
-        void interaction.reply(StatsHandler.getVictoriesScoreboard());
+    async kellovictories(interaction: CommandInteraction): Promise<void> {
+        await interaction.deferReply({ ephemeral: true });
+        void interaction.editReply(StatsHandler.getVictoriesScoreboard());
     }
 }
