@@ -69,7 +69,7 @@ export abstract class StatsHandler {
         const topList = StatsHandler.getTopList();
         for (let i = 0; i < topList.length; i++) {
             const user = topList[i];
-            if (!user || !user.wins) { break; }
+            if (!user || !user.wins) { continue; }
             const entry = StatsHandler.getVictoryTableEntryForUser(user.userId);
             if (entry) {
                 markdownRows.push(entry);

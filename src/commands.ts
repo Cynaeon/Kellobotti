@@ -71,7 +71,7 @@ class BotCommands {
 
     @Slash("kellovictories", { description: 'List season victories.' })
     async kellovictories(interaction: CommandInteraction): Promise<void> {
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply();
         void interaction.editReply(StatsHandler.getVictoriesScoreboard());
     }
 }
