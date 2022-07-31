@@ -57,7 +57,7 @@ client.on("ready", () => {
     }, null, true, 'Europe/Helsinki');
 
     // Season reset on the first day of the month
-    seasonResetJob = new CronJob('30 0 1 * *', () => {
+    seasonResetJob = new CronJob('0 0 1 * *', () => {
         StatsHandler.resetSeason();
     }, null, true, 'Europe/Helsinki');
 });
