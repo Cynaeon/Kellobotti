@@ -42,6 +42,7 @@ client.on("ready", () => {
             void channel?.send(commandMessageStr);
         }
 
+        StatsHandler.resetStreakForUsersExcept(Globals.postedToday);
         void channel?.send(StatsHandler.getScoreboard(5));
 
         if (topKelloUser && Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
@@ -51,7 +52,6 @@ client.on("ready", () => {
             void channel?.send(`${topKelloUser.userName} ${nauris}`);
         }
 
-        StatsHandler.resetStreakForUsersExcept(Globals.postedToday);
         Globals.postedToday = []; 
         Globals.commandGets = [];
     }, null, true, 'Europe/Helsinki');
