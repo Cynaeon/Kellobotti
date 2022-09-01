@@ -120,7 +120,7 @@ export abstract class StatsHandler {
 
     static resetSeason(): void {
         const winner = this.getTopList()[0];
-        winner.wins = winner.wins ?? 0 + 1;
+        winner.wins = (winner.wins ?? 0) + 1;
         stats.forEach(s => {
             s.score = 0;
             s.streak = 0;
