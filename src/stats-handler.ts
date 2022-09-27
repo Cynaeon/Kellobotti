@@ -5,7 +5,7 @@ import stats from '../stats/stats.json';
 import { markdownTable } from 'markdown-table'
 import { Globals } from "./globals";
 
-const tableLabels = ['', 'NAME', 'SCORE', 'STREAK'];
+const tableLabels = ['', 'NAME', 'SCORE'];
 const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
 
 export abstract class StatsHandler {
@@ -37,8 +37,7 @@ export abstract class StatsHandler {
         const standing = getStanding(stat);
         const userName = stat.userName;
         const score = stat.score
-        const streak = stat.streak;
-        return [standing.toString(), userName, score.toString(), streak.toString()];
+        return [standing.toString(), userName, score.toString()];
     }
 
     static getVictoryTableEntryForUser(userId: string): string[] | undefined {

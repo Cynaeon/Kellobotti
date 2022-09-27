@@ -19,13 +19,13 @@ class BotCommands {
         await interaction.deferReply({ ephemeral: true });
 
         if (Globals.kelloOn) {
-            if (Globals.postedToday.includes(interaction.user.id)) {
+            if (Globals.usersWhoGot.includes(interaction.user.id)) {
                 void interaction.editReply({ content: 'Already got.' });
             } else if (StatsHandler.isUserOnCooldown(interaction.user.id)) {
                 void interaction.editReply({ content: 'On cooldown.' });
             } else {
                 StatsHandler.increaseUserScore(interaction.user, interaction.createdTimestamp);
-                Globals.postedToday.push(interaction.user.id);
+                Globals.usersWhoGot.push(interaction.user.id);
                 Globals.commandGets.push({ userName: interaction.user.username, message });
                 void interaction.editReply({ content: 'Get!' });
             }

@@ -1,13 +1,13 @@
 interface GlobalsModel {
     kelloOn: boolean;
-    postedToday: string[];
+    usersWhoGot: string[];
     commandGets: { userName: string, message?: string }[];
     getCooldowns: { [userId: string]: Date };
 }
 
 export const Globals: GlobalsModel = {
     kelloOn: false,
-    postedToday: [],
+    usersWhoGot: [],
     commandGets: [],
     getCooldowns: {},
 };

@@ -14,47 +14,34 @@ const client = new Client({
     botGuilds: [config.guildId],
 });
 
+const getTimes: { hour: number, minute: number }[] = [
+    { hour: 0, minute: 7},
+    { hour: 6, minute: 9 },
+    { hour: 11, minute: 11 },
+    { hour: 13, minute: 37 },
+    { hour: 16, minute: 20 },
+    { hour: 21, minute: 12 },
+];
+
 let seasonResetJob: CronJob;
 
 client.on("ready", () => {
     console.log("Bot ready!");
     void client.initApplicationCommands();
-    let topKelloUser: StatsModel | undefined;
 
-    new CronJob('00 37 13 * * *', () => {
-        topKelloUser = StatsHandler.getTopList()[0];
-        Globals.kelloOn = true;
-    }, null, true, 'Europe/Helsinki');
+    // Create kello get jobs
+    getTimes.forEach(time => {
+        new CronJob(`00 ${time.minute.toString()} ${time.hour.toString()} * * *`, () => {
+            Globals.kelloOn = true;
+        });
 
-    new CronJob('00 38 13 * * *', () => {
-        Globals.kelloOn = false;
-        const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
-
-        if (Globals.commandGets.length) {
-            let commandMessageStr = 'Command gets:\n';
-            Globals.commandGets.forEach(get => {
-                commandMessageStr += get.userName;
-                if (get.message) {
-                    commandMessageStr += `: "${get.message}"`
-                }
-                commandMessageStr += '\n';
-            });
-            void channel?.send(commandMessageStr);
-        }
-
-        StatsHandler.resetStreakForUsersExcept(Globals.postedToday);
-        void channel?.send(StatsHandler.getScoreboard(5));
-
-        if (topKelloUser && Globals.postedToday.length > 0 && !Globals.postedToday.includes(topKelloUser.userId)) {
-            // Mock the player in first place since they missed the kello
-            const nauris = client.emojis.cache.get('645997733894684692');
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            void channel?.send(`${topKelloUser.userName} ${nauris}`);
-        }
-
-        Globals.postedToday = []; 
-        Globals.commandGets = [];
-    }, null, true, 'Europe/Helsinki');
+        // End gets after the minute changes
+        new CronJob(`00 ${(time.minute + 1).toString()} ${time.hour.toString()} * * *`, () => {
+            Globals.kelloOn = false;
+            StatsHandler.resetStreakForUsersExcept(Globals.usersWhoGot);
+            Globals.usersWhoGot = []; 
+        });
+    })
 
     // Season reset on the first day of the month
     seasonResetJob = new CronJob('0 0 1 * *', () => {
@@ -73,7 +60,7 @@ client.on('messageCreate', (message: Message) => {
 
     if (
         !Globals.kelloOn
-        || Globals.postedToday.includes(userId)
+        || Globals.usersWhoGot.includes(userId)
         || StatsHandler.isUserOnCooldown(userId)
     ) {
         Globals.getCooldowns[userId] = message.createdAt;
@@ -82,7 +69,7 @@ client.on('messageCreate', (message: Message) => {
 
     thumbsUp(message);
     StatsHandler.increaseUserScore(message.author, message.createdTimestamp);
-    Globals.postedToday.push(message.author.id);
+    Globals.usersWhoGot.push(message.author.id);
 });
 
 async function run() {
@@ -102,6 +89,23 @@ function thumbsUp(message: Message) {
     setTimeout(() => {
         message.react(emojiId).catch(() => void message.react('👌'));
     }, 1000);
+}
+
+function listCommandGets() {
+    const channel = client.channels.cache.get(config.channelId) as TextChannel | undefined;
+
+    if (Globals.commandGets.length) {
+        let commandMessageStr = 'Command gets:\n';
+        Globals.commandGets.forEach(get => {
+            commandMessageStr += get.userName;
+            if (get.message) {
+                commandMessageStr += `: "${get.message}"`
+            }
+            commandMessageStr += '\n';
+        });
+        void channel?.send(commandMessageStr);
+        Globals.commandGets = [];
+    }
 }
 
 export function getDaysUntilSeasonReset(): number {
