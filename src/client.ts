@@ -31,12 +31,12 @@ client.on("ready", () => {
 
     // Create kello get jobs
     getTimes.forEach(time => {
-        new CronJob(`00 ${time.minute.toString()} ${time.hour.toString()} * * *`, () => {
+        new CronJob(`00 ${time.minute} ${time.hour} * * *`, () => {
             Globals.kelloOn = true;
         });
 
         // End gets after the minute changes
-        new CronJob(`00 ${(time.minute + 1).toString()} ${time.hour.toString()} * * *`, () => {
+        new CronJob(`00 ${time.minute + 1} ${time.hour} * * *`, () => {
             Globals.kelloOn = false;
             StatsHandler.resetStreakForUsersExcept(Globals.usersWhoGot);
             Globals.usersWhoGot = []; 
