@@ -11,3 +11,13 @@ export const Globals: GlobalsModel = {
     commandGets: [],
     getCooldowns: {},
 };
+
+
+export const GET_TIMES: { hour: number, minute: number }[] = [
+    { hour: 0, minute: 7},
+    { hour: 6, minute: 9 },
+    { hour: 11, minute: 11 },
+    { hour: 13, minute: 37 },
+    { hour: 16, minute: 20 },
+    { hour: 21, minute: 12 },
+];

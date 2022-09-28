@@ -4,24 +4,21 @@ import { Intents, Interaction, Message, TextChannel } from "discord.js";
 import { dirname, importx } from "@discordx/importer";
 import { CronJob } from "cron";
 import { StatsHandler } from "./stats-handler";
-import config from '../config.json'; 
-import { Globals } from "./globals";
+import config from '../config_dev.json'; 
+import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
 import { StatsModel } from "./models/stats-model";
+
+/*
+ * TODO: 
+ * - Command to display all get times
+ * - Command to display next get time
+ */
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
     botGuilds: [config.guildId],
 });
-
-const getTimes: { hour: number, minute: number }[] = [
-    { hour: 0, minute: 7},
-    { hour: 6, minute: 9 },
-    { hour: 11, minute: 11 },
-    { hour: 13, minute: 37 },
-    { hour: 16, minute: 20 },
-    { hour: 21, minute: 12 },
-];
 
 let seasonResetJob: CronJob;
 
@@ -30,7 +27,7 @@ client.on("ready", () => {
     void client.initApplicationCommands();
 
     // Create kello get jobs
-    getTimes.forEach(time => {
+    GET_TIMES.forEach(time => {
         new CronJob(`00 ${time.minute} ${time.hour} * * *`, () => {
             Globals.kelloOn = true;
         });
