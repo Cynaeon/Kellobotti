@@ -80,7 +80,8 @@ export abstract class StatsHandler {
     static increaseUserScore(user: User, timestamp: number): void {
         const userStat = stats.find(s => s.userId === user.id);
         const seconds =  new Date(timestamp).getSeconds();
-        const points = Math.round(100 - seconds / 2); // Points scale: 70 - 100
+        // const points = Math.round(100 - seconds / 2); // Points scale: 70 - 100
+        const points = 1;
 
         if (userStat) {
             userStat.score += points;
