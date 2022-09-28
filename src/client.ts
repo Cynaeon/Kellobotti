@@ -9,12 +9,6 @@ import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
 import { StatsModel } from "./models/stats-model";
 
-/*
- * TODO: 
- * - Command to display all get times
- * - Command to display next get time
- */
-
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
     botGuilds: [config.guildId],
