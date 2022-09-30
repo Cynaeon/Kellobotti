@@ -4,7 +4,7 @@ import { Intents, Interaction, Message, TextChannel } from "discord.js";
 import { dirname, importx } from "@discordx/importer";
 import { CronJob } from "cron";
 import { StatsHandler } from "./stats-handler";
-import config from '../config_dev.json'; 
+import config from '../config.json'; 
 import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
 import { StatsModel } from "./models/stats-model";
@@ -24,14 +24,14 @@ client.on("ready", () => {
     GET_TIMES.forEach(time => {
         new CronJob(`00 ${time.minute} ${time.hour} * * *`, () => {
             Globals.kelloOn = true;
-        });
+        }), null, true, 'Europe/Helsinki';
 
         // End gets after the minute changes
         new CronJob(`00 ${time.minute + 1} ${time.hour} * * *`, () => {
             Globals.kelloOn = false;
             StatsHandler.resetStreakForUsersExcept(Globals.usersWhoGot);
             Globals.usersWhoGot = []; 
-        });
+        }, null, true, 'Europe/Helsinki');
     })
 
     // Season reset on the first day of the month
