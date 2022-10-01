@@ -24,7 +24,7 @@ client.on("ready", () => {
     GET_TIMES.forEach(time => {
         new CronJob(`00 ${time.minute} ${time.hour} * * *`, () => {
             Globals.kelloOn = true;
-        }), null, true, 'Europe/Helsinki';
+        }, null, true, 'Europe/Helsinki');
 
         // End gets after the minute changes
         new CronJob(`00 ${time.minute + 1} ${time.hour} * * *`, () => {
