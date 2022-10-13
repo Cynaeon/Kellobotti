@@ -7,7 +7,6 @@ import { StatsHandler } from "./stats-handler";
 import config from '../config.json'; 
 import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
-import { StatsModel } from "./models/stats-model";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],

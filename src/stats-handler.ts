@@ -3,9 +3,9 @@ import fs from 'fs';
 import { User } from "discord.js";
 import stats from '../stats/stats.json';
 import { markdownTable } from 'markdown-table'
-import { Globals } from "./globals";
+import { GET_TIMES, Globals } from "./globals";
 
-const tableLabels = ['', 'NAME', 'SCORE'];
+const tableLabels = ['', 'NAME', 'SCORE', 'ACC'];
 const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
 
 export abstract class StatsHandler {
@@ -37,7 +37,8 @@ export abstract class StatsHandler {
         const standing = getStanding(stat);
         const userName = stat.userName;
         const score = stat.score
-        return [standing.toString(), userName, score.toString()];
+        const percentage = getPercentage(score);
+        return [standing.toString(), userName, score.toString(), `${percentage} %`];
     }
 
     static getVictoryTableEntryForUser(userId: string): string[] | undefined {
@@ -166,4 +167,19 @@ function getMedalEmoji(standing: number): string {
         default:
             return '';
     }
+}
+
+function getPercentage(score: number): string {
+    const date = new Date();
+    const fullDays = date.getDate() - 1;
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const getsToday = GET_TIMES.reduce((prev, time) => {
+        return hours > time.hour || hours === time.hour && minutes >= time.minute
+            ? prev + 1
+            : prev;
+    }, 0);
+    const totalGets = fullDays * GET_TIMES.length + getsToday;
+    const percentage = score / totalGets * 100;
+    return percentage.toFixed(1);
 }
