@@ -1,13 +1,13 @@
 import { CommandInteraction, User } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import { getDaysUntilSeasonReset } from "./client";
-import { GET_TIMES, Globals } from "./globals";
+import { GET_TIMES } from "./globals";
 import { StatsHandler } from "./stats-handler";
 
 @Discord()
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BotCommands {
-    @Slash("getkello", { description: 'Get kello!' })
+    /* @Slash("getkello", { description: 'Get kello!' })
     async getkello(
         @SlashOption("message", {
             description: "Write an optional message",
@@ -33,7 +33,7 @@ class BotCommands {
             Globals.getCooldowns[interaction.user.id] = interaction.createdAt;
             void interaction.editReply({ content: 'It\'s not kello' });
         }
-    }
+    } */
 
     @Slash("topkello", { description: 'List five of the most kello people.' })
     topkello(interaction: CommandInteraction): void {
