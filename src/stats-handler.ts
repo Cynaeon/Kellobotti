@@ -5,7 +5,7 @@ import stats from '../stats/stats.json';
 import { markdownTable } from 'markdown-table'
 import { GET_TIMES, Globals } from "./globals";
 
-const tableLabels = ['', 'NAME', 'SCORE', 'ACC'];
+const tableLabels = ['', 'NAME', 'SCORE'];
 const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
 
 export abstract class StatsHandler {
@@ -37,8 +37,8 @@ export abstract class StatsHandler {
         const standing = getStanding(stat);
         const userName = stat.userName;
         const score = stat.score
-        const percentage = getPercentage(score);
-        return [standing.toString(), userName, score.toString(), `${percentage} %`];
+        // const percentage = getPercentage(score);
+        return [standing.toString(), userName, score.toString()];
     }
 
     static getVictoryTableEntryForUser(userId: string): string[] | undefined {
