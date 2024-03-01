@@ -5,6 +5,11 @@ interface GlobalsModel {
     getCooldowns: { [userId: string]: Date };
 }
 
+export interface KelloTime {
+    hour: number,
+    minute: number,
+}
+
 export const Globals: GlobalsModel = {
     kelloOn: false,
     usersWhoGot: [],
@@ -13,7 +18,7 @@ export const Globals: GlobalsModel = {
 };
 
 
-export const GET_TIMES: { hour: number, minute: number }[] = [
+export const GET_TIMES: KelloTime[] = [
     { hour: 0, minute: 7},
     { hour: 6, minute: 9 },
     { hour: 11, minute: 11 },

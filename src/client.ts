@@ -2,10 +2,10 @@ import "reflect-metadata";
 import { Client } from "discordx";
 import { Intents, Interaction, Message, TextChannel } from "discord.js";
 import { dirname, importx } from "@discordx/importer";
-import { CronJob } from "cron";
+import { CronJob, CronTime } from "cron";
 import { StatsHandler } from "./stats-handler";
-import config from '../config.json'; 
-import { GET_TIMES, Globals } from "./globals";
+import config from '../config_dev.json'; 
+import { GET_TIMES, Globals, KelloTime } from "./globals";
 import moment from "moment";
 
 const client = new Client({
@@ -14,6 +14,9 @@ const client = new Client({
 });
 
 let seasonResetJob: CronJob;
+let randomKelloTimeJob: CronJob;
+let randomKelloTimeEndJob: CronJob;
+let dailyBonusKello: KelloTime = { hour: 0, minute: 0 };
 
 client.on("ready", () => {
     console.log("Bot ready!");
@@ -22,16 +25,31 @@ client.on("ready", () => {
     // Create kello get jobs
     GET_TIMES.forEach(time => {
         new CronJob(`00 ${time.minute} ${time.hour} * * *`, () => {
-            Globals.kelloOn = true;
+            kelloOn()
         }, null, true, 'Europe/Helsinki');
 
         // End gets after the minute changes
         new CronJob(`00 ${time.minute + 1} ${time.hour} * * *`, () => {
-            Globals.kelloOn = false;
-            StatsHandler.resetStreakForUsersExcept(Globals.usersWhoGot);
-            Globals.usersWhoGot = []; 
+            kelloOff()
         }, null, true, 'Europe/Helsinki');
-    })
+    });
+
+
+    randomKelloTimeJob = new CronJob(`00 00 00 * * *`, () => {
+        kelloOn();
+    }, null, true, 'Europe/Helsinki');
+
+    randomKelloTimeEndJob = new CronJob(`00 00 00 * * *`, () => {
+        kelloOff();
+    }, null, true, 'Europe/Helsinki');
+
+    initDailyRandomKello();
+
+    new CronJob('00 59 23 * * * ', () => {
+        initDailyRandomKello();
+    });
+
+    randomKelloTimeJob.stop();
 
     // Season reset on the first day of the month
     seasonResetJob = new CronJob('0 0 1 * *', () => {
@@ -69,6 +87,26 @@ async function run() {
 
 void run();
 
+function kelloOn() {
+    Globals.kelloOn = true;
+}
+
+function kelloOff() {
+    Globals.kelloOn = false;
+    StatsHandler.resetStreakForUsersExcept(Globals.usersWhoGot);
+    Globals.usersWhoGot = []; 
+}
+
+function initDailyRandomKello() {
+    // Generate new random get time
+    dailyBonusKello = { hour: getRandomInt(0, 23), minute: getRandomInt(0, 59) }
+    const startTime = new CronTime(`01 ${dailyBonusKello.minute} ${dailyBonusKello.hour} * * *`);
+    const endTime = new CronTime(`00 ${dailyBonusKello.minute + 1} ${dailyBonusKello.hour} * * *`);
+    randomKelloTimeJob.setTime(startTime);
+    randomKelloTimeEndJob.setTime(endTime)
+    console.log('Daily bonus kello set to', dailyBonusKello);
+}
+
 function thumbsUp(message: Message) {
     const sharedFirstPlace = StatsHandler.getTopList().length >= 2
         && StatsHandler.getTopList()[0].score === StatsHandler.getTopList()[1].score;
@@ -96,6 +134,12 @@ function listCommandGets() {
         void channel?.send(commandMessageStr);
         Globals.commandGets = [];
     }
+}
+
+function getRandomInt(min: number, max: number): number {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export function getDaysUntilSeasonReset(): number {
