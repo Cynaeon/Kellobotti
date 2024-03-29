@@ -17,7 +17,7 @@ const client = new Client({
 let seasonResetJob: CronJob;
 let randomKelloTimeJob: CronJob;
 let randomKelloTimeEndJob: CronJob;
-let dailyBonusKello: KelloTime = { name: 'Bonus', hour: 0, minute: 0 };
+const dailyBonusKello: KelloTime = { name: 'Bonus', hour: 0, minute: 0 };
 
 client.on("ready", () => {
     console.log("Bot ready!");
@@ -43,13 +43,12 @@ client.on("ready", () => {
         kelloOff();
     }, null, true, 'Europe/Helsinki');
 
+    GET_TIMES.push(dailyBonusKello);
     initDailyRandomKello();
 
-    new CronJob('00 59 23 * * * ', () => {
+    new CronJob('00 00 00 * * * ', () => {
         initDailyRandomKello();
-    });
-
-    randomKelloTimeJob.stop();
+    }, null, true, 'Europe/Helsinki');
 
     // Season reset on the first day of the month
     seasonResetJob = new CronJob('0 0 1 * *', () => {
@@ -100,14 +99,17 @@ function kelloOff() {
 /** Generate new random get time. */
 function initDailyRandomKello() {
     do {
-        dailyBonusKello = { hour: getRandomInt(0, 23), minute: getRandomInt(0, 59), name: 'Bonus' };
+        dailyBonusKello.hour = getRandomInt(0, 23)
+        dailyBonusKello.minute = getRandomInt(0, 59);
     } while (!isValidRandomKello(dailyBonusKello));
 
     const startTime = new CronTime(`00 ${dailyBonusKello.minute} ${dailyBonusKello.hour} * * *`);
     const endTime = new CronTime(`00 ${dailyBonusKello.minute + 1} ${dailyBonusKello.hour} * * *`);
     randomKelloTimeJob.setTime(startTime);
-    randomKelloTimeEndJob.setTime(endTime)
-    console.log('Daily bonus kello set to', dailyBonusKello);
+    randomKelloTimeJob.start();
+    randomKelloTimeEndJob.setTime(endTime);
+    randomKelloTimeEndJob.start();
+    console.log(`Daily bonus kello set to ${dailyBonusKello.hour}:${dailyBonusKello.minute}`);
 }
 
 function thumbsUp(message: Message) {

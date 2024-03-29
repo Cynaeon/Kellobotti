@@ -79,7 +79,7 @@ class BotCommands {
     kellorules(interaction: CommandInteraction): void {
         const getTimes = GET_TIMES.map(time => {
             const addLeadingZero = (value: number) => value < 10 ? `0${value}` : value;
-            return `${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)}`;
+            return `**${time.name}** (${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)})`;
         }).join(', ');
         void interaction.reply(`Current get times: ${getTimes}`);
     }
