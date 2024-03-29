@@ -7,6 +7,7 @@ import { StatsHandler } from "./stats-handler";
 import config from '../config_dev.json'; 
 import { GET_TIMES, Globals, KelloTime } from "./globals";
 import moment from "moment";
+import { isValidRandomKello } from "./util";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -16,7 +17,7 @@ const client = new Client({
 let seasonResetJob: CronJob;
 let randomKelloTimeJob: CronJob;
 let randomKelloTimeEndJob: CronJob;
-let dailyBonusKello: KelloTime = { hour: 0, minute: 0 };
+let dailyBonusKello: KelloTime = { name: 'Bonus', hour: 0, minute: 0 };
 
 client.on("ready", () => {
     console.log("Bot ready!");
@@ -96,10 +97,13 @@ function kelloOff() {
     Globals.usersWhoGot = []; 
 }
 
+/** Generate new random get time. */
 function initDailyRandomKello() {
-    // Generate new random get time
-    dailyBonusKello = { hour: getRandomInt(0, 23), minute: getRandomInt(0, 59) }
-    const startTime = new CronTime(`01 ${dailyBonusKello.minute} ${dailyBonusKello.hour} * * *`);
+    do {
+        dailyBonusKello = { hour: getRandomInt(0, 23), minute: getRandomInt(0, 59), name: 'Bonus' };
+    } while (!isValidRandomKello(dailyBonusKello));
+
+    const startTime = new CronTime(`00 ${dailyBonusKello.minute} ${dailyBonusKello.hour} * * *`);
     const endTime = new CronTime(`00 ${dailyBonusKello.minute + 1} ${dailyBonusKello.hour} * * *`);
     randomKelloTimeJob.setTime(startTime);
     randomKelloTimeEndJob.setTime(endTime)
