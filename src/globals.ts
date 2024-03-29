@@ -8,6 +8,7 @@ interface GlobalsModel {
 export interface KelloTime {
     hour: number,
     minute: number,
+    name: string,
 }
 
 export const Globals: GlobalsModel = {
@@ -17,12 +18,13 @@ export const Globals: GlobalsModel = {
     getCooldowns: {},
 };
 
-
 export const GET_TIMES: KelloTime[] = [
-    { hour: 0, minute: 7},
-    { hour: 6, minute: 9 },
-    { hour: 11, minute: 11 },
-    { hour: 13, minute: 37 },
-    { hour: 16, minute: 20 },
-    { hour: 21, minute: 12 },
+    // { name: 'Bond', hour: 0, minute: 7},
+    { name: 'John', hour: 1, minute: 17},
+    { name: 'Havu', hour: 6, minute: 9 },
+    { name: 'Todd', hour: 11, minute: 11 },
+    { name: 'Leet', hour: 13, minute: 37 },
+    { name: 'Weed', hour: 16, minute: 20 },
+    // { name: 'Rush', hour: 21, minute: 12 },
+    { name: 'Niilo', hour: 22, minute: 22 },
 ];
