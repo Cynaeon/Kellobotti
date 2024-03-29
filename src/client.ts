@@ -34,7 +34,6 @@ client.on("ready", () => {
         }, null, true, 'Europe/Helsinki');
     });
 
-
     randomKelloTimeJob = new CronJob(`00 00 00 * * *`, () => {
         kelloOn();
     }, null, true, 'Europe/Helsinki');
@@ -114,6 +113,8 @@ function thumbsUp(message: Message) {
     const emojiId = !sharedFirstPlace && message.author.id === StatsHandler.getTopList()[0].userId
         ? '890243525361405953' // Hymy hyytyy
         : '406099801814466560'; // Paavopeukku
+
+    // React after setTimeout because sometimes the reaction wasn't showing for the message author.
     setTimeout(() => {
         message.react(emojiId).catch(() => void message.react('👌'));
     }, 1000);
