@@ -81,6 +81,6 @@ class BotCommands {
         const getTimes = GET_TIMES.map(time => {
             return `**${time.name}** (${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)})`;
         }).join(', ');
-        void interaction.reply(`Current get times: ${getTimes}, **Bonus** (${addLeadingZero(BONUS_TIME.hour)}:${addLeadingZero(BONUS_TIME.minute)})`);
+        void interaction.reply(`Current get times: ${getTimes}, **${BONUS_TIME.name}** (${addLeadingZero(BONUS_TIME.hour)}:${addLeadingZero(BONUS_TIME.minute)})`);
     }
 }
