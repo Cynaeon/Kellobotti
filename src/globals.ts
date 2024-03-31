@@ -28,3 +28,5 @@ export const GET_TIMES: KelloTime[] = [
     // { name: 'Rush', hour: 21, minute: 12 },
     { name: 'Niilo', hour: 22, minute: 22 },
 ];
+
+export const BONUS_TIME: KelloTime = { name: 'Bonus', hour: 0, minute: 0 };

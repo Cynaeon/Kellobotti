@@ -1,7 +1,7 @@
 import { CommandInteraction, User } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import { getDaysUntilSeasonReset } from "./client";
-import { GET_TIMES } from "./globals";
+import { BONUS_TIME, GET_TIMES } from "./globals";
 import { StatsHandler } from "./stats-handler";
 
 @Discord()
@@ -77,10 +77,10 @@ class BotCommands {
 
     @Slash("kellorules", { description: 'Current rules of kello.' })
     kellorules(interaction: CommandInteraction): void {
+        const addLeadingZero = (value: number) => value < 10 ? `0${value}` : value;
         const getTimes = GET_TIMES.map(time => {
-            const addLeadingZero = (value: number) => value < 10 ? `0${value}` : value;
             return `**${time.name}** (${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)})`;
         }).join(', ');
-        void interaction.reply(`Current get times: ${getTimes}`);
+        void interaction.reply(`Current get times: ${getTimes}, **Bonus** (${addLeadingZero(BONUS_TIME.hour)}:${addLeadingZero(BONUS_TIME.minute)})`);
     }
 }

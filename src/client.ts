@@ -5,7 +5,7 @@ import { dirname, importx } from "@discordx/importer";
 import { CronJob, CronTime } from "cron";
 import { StatsHandler } from "./stats-handler";
 import config from '../config_dev.json'; 
-import { GET_TIMES, Globals, KelloTime } from "./globals";
+import { BONUS_TIME, GET_TIMES, Globals, KelloTime } from "./globals";
 import moment from "moment";
 import { isValidRandomKello } from "./util";
 
@@ -17,7 +17,6 @@ const client = new Client({
 let seasonResetJob: CronJob;
 let randomKelloTimeJob: CronJob;
 let randomKelloTimeEndJob: CronJob;
-const dailyBonusKello: KelloTime = { name: 'Bonus', hour: 0, minute: 0 };
 
 client.on("ready", () => {
     console.log("Bot ready!");
@@ -43,7 +42,6 @@ client.on("ready", () => {
         kelloOff();
     }, null, true, 'Europe/Helsinki');
 
-    GET_TIMES.push(dailyBonusKello);
     initDailyRandomKello();
 
     new CronJob('00 00 00 * * * ', () => {
@@ -99,17 +97,17 @@ function kelloOff() {
 /** Generate new random get time. */
 function initDailyRandomKello() {
     do {
-        dailyBonusKello.hour = getRandomInt(0, 23)
-        dailyBonusKello.minute = getRandomInt(0, 59);
-    } while (!isValidRandomKello(dailyBonusKello));
+        BONUS_TIME.hour = getRandomInt(0, 23)
+        BONUS_TIME.minute = getRandomInt(0, 59);
+    } while (!isValidRandomKello(BONUS_TIME));
 
-    const startTime = new CronTime(`00 ${dailyBonusKello.minute} ${dailyBonusKello.hour} * * *`);
-    const endTime = new CronTime(`00 ${dailyBonusKello.minute + 1} ${dailyBonusKello.hour} * * *`);
+    const startTime = new CronTime(`00 ${BONUS_TIME.minute} ${BONUS_TIME.hour} * * *`);
+    const endTime = new CronTime(`00 ${BONUS_TIME.minute + 1} ${BONUS_TIME.hour} * * *`);
     randomKelloTimeJob.setTime(startTime);
     randomKelloTimeJob.start();
     randomKelloTimeEndJob.setTime(endTime);
     randomKelloTimeEndJob.start();
-    console.log(`Daily bonus kello set to ${dailyBonusKello.hour}:${dailyBonusKello.minute}`);
+    console.log(`Daily bonus kello set to ${BONUS_TIME.hour}:${BONUS_TIME.minute}`);
 }
 
 function thumbsUp(message: Message) {
