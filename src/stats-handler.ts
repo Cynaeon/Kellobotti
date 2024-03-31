@@ -180,6 +180,6 @@ function getPercentage(score: number): string {
             : prev;
     }, 0);
     const totalGets = fullDays * GET_TIMES.length + getsToday;
-    const percentage = score / totalGets * 100;
+    const percentage = totalGets ? score / totalGets * 100 : 0;
     return percentage.toFixed(2) + ' %';
 }
