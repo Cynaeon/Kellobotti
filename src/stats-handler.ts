@@ -10,7 +10,7 @@ const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
 
 export abstract class StatsHandler {
     static getTopList(): StatsModel[] {
-        return stats.sort((a, b) => b.score - a.score);
+        return stats.sort((a, b) => b.score - a.score).filter(s => s.score !== 0);
     }
 
     static getScoreboard(length?: number): string {
@@ -37,7 +37,8 @@ export abstract class StatsHandler {
         const standing = getStanding(stat);
         const userName = stat.userName;
         const score = stat.score
-        const percentage = getPercentage(score);
+        const gets = stat.gets;
+        const percentage = getPercentage(gets);
         return [standing.toString(), userName, score.toString(), percentage];
     }
 
@@ -86,12 +87,14 @@ export abstract class StatsHandler {
 
         if (userStat) {
             userStat.score += points;
+            userStat.gets++;
             userStat.streak++;
         } else {
             stats.push({
                 userId: user.id,
                 userName: user.username,
                 score: points,
+                gets: 1,
                 streak: 1,
             });
         }
@@ -125,6 +128,7 @@ export abstract class StatsHandler {
         stats.forEach(s => {
             s.score = 0;
             s.streak = 0;
+            s.gets = 0;
         });
 
         save();
@@ -139,7 +143,7 @@ function save() {
 
 function getStanding(stat: StatsModel): number {
     let usersWithHigherScore = 0;
-    stats.forEach(s => {
+    stats.filter(s => s.score !== 0).forEach(s => {
         if (s.score > stat.score) { usersWithHigherScore++; }
     });
     
@@ -169,7 +173,7 @@ function getMedalEmoji(standing: number): string {
     }
 }
 
-function getPercentage(score: number): string {
+function getPercentage(gets: number): string {
     const date = new Date();
     const fullDays = date.getDate() - 1;
     const hours = date.getHours();
@@ -180,6 +184,6 @@ function getPercentage(score: number): string {
             : prev;
     }, 0);
     const totalGets = fullDays * GET_TIMES.length + getsToday;
-    const percentage = totalGets ? score / totalGets * 100 : 0;
+    const percentage = totalGets ? gets / totalGets * 100 : 0;
     return percentage.toFixed(2) + ' %';
 }
