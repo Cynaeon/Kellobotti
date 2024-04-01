@@ -1,8 +1,9 @@
 import { CommandInteraction, User } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import { getDaysUntilSeasonReset } from "./client";
-import { BONUS_TIME, GET_TIMES } from "./globals";
+import { GET_TIMES } from "./globals";
 import { StatsHandler } from "./stats-handler";
+import bonusTime from './bonus_time.json';
 
 @Discord()
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -81,6 +82,6 @@ class BotCommands {
         const getTimes = GET_TIMES.map(time => {
             return `**${time.name}** (${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)})`;
         }).join(', ');
-        void interaction.reply(`Current get times: ${getTimes}, **${BONUS_TIME.name}** (${addLeadingZero(BONUS_TIME.hour)}:${addLeadingZero(BONUS_TIME.minute)})`);
+        void interaction.reply(`Current get times: ${getTimes}, **${bonusTime.name as string}** (${addLeadingZero(bonusTime.hour as number)}:${addLeadingZero(bonusTime.minute as number)})`);
     }
 }

@@ -5,9 +5,11 @@ import { dirname, importx } from "@discordx/importer";
 import { CronJob, CronTime } from "cron";
 import { StatsHandler } from "./stats-handler";
 import config from '../config_dev.json'; 
-import { BONUS_TIME, GET_TIMES, Globals, KelloTime } from "./globals";
+import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
 import { isValidRandomKello } from "./util";
+import bonusTime from './bonus_time.json';
+import fs from 'fs';
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -41,8 +43,6 @@ client.on("ready", () => {
     randomKelloTimeEndJob = new CronJob(`00 00 00 * * *`, () => {
         kelloOff();
     }, null, true, 'Europe/Helsinki');
-
-    initDailyRandomKello();
 
     new CronJob('00 00 00 * * * ', () => {
         initDailyRandomKello();
@@ -97,17 +97,20 @@ function kelloOff() {
 /** Generate new random get time. */
 function initDailyRandomKello() {
     do {
-        BONUS_TIME.hour = getRandomInt(0, 23)
-        BONUS_TIME.minute = getRandomInt(0, 59);
-    } while (!isValidRandomKello(BONUS_TIME));
+        bonusTime.hour = getRandomInt(0, 23)
+        bonusTime.minute = getRandomInt(0, 59);
+    } while (!isValidRandomKello(bonusTime));
 
-    const startTime = new CronTime(`00 ${BONUS_TIME.minute} ${BONUS_TIME.hour} * * *`);
-    const endTime = new CronTime(`00 ${BONUS_TIME.minute + 1} ${BONUS_TIME.hour} * * *`);
+    const startTime = new CronTime(`00 ${bonusTime.minute as number} ${bonusTime.hour as number} * * *`);
+    const endTime = new CronTime(`00 ${bonusTime.minute as number + 1} ${bonusTime.hour as number} * * *`);
     randomKelloTimeJob.setTime(startTime);
     randomKelloTimeJob.start();
     randomKelloTimeEndJob.setTime(endTime);
     randomKelloTimeEndJob.start();
-    console.log(`Daily bonus kello set to ${BONUS_TIME.hour}:${BONUS_TIME.minute}`);
+    fs.writeFile("./bonus_time.json", JSON.stringify(bonusTime), (err) => {
+        if (err) { console.error('Error saving bonus time: ', err); }
+    });
+    console.log(`Daily bonus kello set to ${bonusTime.hour as number}:${bonusTime.minute as number}`);
 }
 
 function thumbsUp(message: Message) {
