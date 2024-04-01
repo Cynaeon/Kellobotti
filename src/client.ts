@@ -101,8 +101,8 @@ function initDailyRandomKello() {
         bonusTime.minute = getRandomInt(0, 59);
     } while (!isValidRandomKello(bonusTime));
 
-    const startTime = new CronTime(`00 ${bonusTime.minute as number} ${bonusTime.hour as number} * * *`);
-    const endTime = new CronTime(`00 ${bonusTime.minute as number + 1} ${bonusTime.hour as number} * * *`);
+    const startTime = new CronTime(`00 ${bonusTime.minute} ${bonusTime.hour} * * *`);
+    const endTime = new CronTime(`00 ${bonusTime.minute + 1} ${bonusTime.hour} * * *`);
     randomKelloTimeJob.setTime(startTime);
     randomKelloTimeJob.start();
     randomKelloTimeEndJob.setTime(endTime);
@@ -110,7 +110,7 @@ function initDailyRandomKello() {
     fs.writeFile("./bonus_time.json", JSON.stringify(bonusTime), (err) => {
         if (err) { console.error('Error saving bonus time: ', err); }
     });
-    console.log(`Daily bonus kello set to ${bonusTime.hour as number}:${bonusTime.minute as number}`);
+    console.log(`Daily bonus kello set to ${bonusTime.hour}:${bonusTime.minute}`);
 }
 
 function thumbsUp(message: Message) {
