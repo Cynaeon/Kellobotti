@@ -4,7 +4,7 @@ import { Intents, Interaction, Message, TextChannel } from "discord.js";
 import { dirname, importx } from "@discordx/importer";
 import { CronJob, CronTime } from "cron";
 import { StatsHandler } from "./stats-handler";
-import config from '../config_dev.json'; 
+import config from '../config.json'; 
 import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
 import { isValidRandomKello } from "./util";
