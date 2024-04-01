@@ -107,7 +107,7 @@ function initDailyRandomKello() {
     randomKelloTimeJob.start();
     randomKelloTimeEndJob.setTime(endTime);
     randomKelloTimeEndJob.start();
-    fs.writeFile("./bonus_time.json", JSON.stringify(bonusTime), (err) => {
+    fs.writeFile("src/bonus_time.json", JSON.stringify(bonusTime), (err) => {
         if (err) { console.error('Error saving bonus time: ', err); }
     });
     console.log(`Daily bonus kello set to ${bonusTime.hour}:${bonusTime.minute}`);
