@@ -36,17 +36,17 @@ client.on("ready", () => {
         }, null, true, 'Europe/Helsinki');
     });
 
-    randomKelloTimeJob = new CronJob(`00 00 00 * * *`, () => {
+    /* randomKelloTimeJob = new CronJob(`00 00 00 * * *`, () => {
         kelloOn();
-    }, null, true, 'Europe/Helsinki');
+    });
 
     randomKelloTimeEndJob = new CronJob(`00 00 00 * * *`, () => {
         kelloOff();
-    }, null, true, 'Europe/Helsinki');
+    });
 
     new CronJob('00 00 00 * * * ', () => {
         initDailyRandomKello();
-    }, null, true, 'Europe/Helsinki');
+    }, null, true, 'Europe/Helsinki'); */
 
     // Season reset on the first day of the month
     seasonResetJob = new CronJob('0 0 1 * *', () => {
