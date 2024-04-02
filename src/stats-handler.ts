@@ -183,7 +183,7 @@ function getPercentage(gets: number): string {
             ? prev + 1
             : prev;
     }, 0);
-    const totalGets = fullDays * GET_TIMES.length + 1 + getsToday; // +1 is bonus get.
+    const totalGets = fullDays * GET_TIMES.length + getsToday;
     const percentage = totalGets ? gets / totalGets * 100 : 0;
     return percentage.toFixed(2) + ' %';
 }
