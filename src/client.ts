@@ -66,9 +66,9 @@ client.on('messageCreate', (message: Message) => {
     if (
         !Globals.kelloOn
         || Globals.usersWhoGot.includes(userId)
-        || StatsHandler.isUserOnCooldown(userId)
+        // || StatsHandler.isUserOnCooldown(userId)
     ) {
-        Globals.getCooldowns[userId] = message.createdAt;
+        // Globals.getCooldowns[userId] = message.createdAt;
         return;
     }
 
