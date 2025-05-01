@@ -67,7 +67,7 @@ export abstract class StatsHandler {
         const markdownRows = []
         markdownRows.push(victoryTableLabels);
 
-        const topList = StatsHandler.getTopList();
+        const topList = stats.filter(s => s.wins).sort((a, b) => (b.wins as number) - (a.wins as number));
         for (let i = 0; i < topList.length; i++) {
             const user = topList[i];
             if (!user || !user.wins) { continue; }
