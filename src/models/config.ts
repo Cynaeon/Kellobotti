@@ -3,4 +3,5 @@ export interface Config {
     clientId: string;
     guildId: string;
     channelId: string;
+    openCriticApiKey: string;
 }

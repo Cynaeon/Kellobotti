@@ -59,6 +59,8 @@ client.on("interactionCreate", (interaction: Interaction) => {
 });
 
 client.on('messageCreate', (message: Message) => {
+    checkForOpenCriticLink(message);
+
     if (message.channelId !== config.channelId) { return; }
 
     const userId = message.author.id;
@@ -152,4 +154,59 @@ function getRandomInt(min: number, max: number): number {
 
 export function getDaysUntilSeasonReset(): number {
     return seasonResetJob.nextDate().diff(moment(), 'days');
+}
+
+async function checkForOpenCriticLink(message: Message): Promise<void> {    
+    const words = message.content.split(' ');
+    const openCriticLink = words.find(word => word.startsWith('https://opencritic.com/game/'));
+
+    if (openCriticLink) {
+        const gameId = Number(openCriticLink?.split('/')[4]);
+        const score = await fetchOpenCriticGameScore(gameId);
+
+        if (score !== undefined) {
+            const reply = getOpenCriticDissMessage(score);
+            message.reply(reply)
+                .catch(err => console.error('Could not reply:', err));
+        }
+    }
+}
+
+async function fetchOpenCriticGameScore(gameId: number): Promise<number | undefined> {
+    try {
+        const response = await fetch(
+            `https://opencritic-api.p.rapidapi.com/game/${gameId}`, 
+            {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': config.openCriticApiKey,
+                    'x-rapidapi-host': 'opencritic-api.p.rapidapi.com'
+                }
+            }
+        );
+
+        const result = await response.text();
+        console.log(result);
+
+        const score: number = Math.round(JSON.parse(result).topCriticScore);
+        return score;
+    } catch (error) {
+        console.error(error);
+        return undefined;
+    }
+}
+
+function getOpenCriticDissMessage(score: number): string {
+    const rnd = Math.random();
+    const witcherinoScore = 93;
+
+    if (rnd < 0.01 && score < witcherinoScore) {
+        return 'Witcher 3 on parempi';
+    }
+
+    if (rnd < 0.05) {
+        return `Quite bad not even ${score + 1}`;
+    }
+
+    return `Aika huono ei ees ${score + 1}`;
 }
