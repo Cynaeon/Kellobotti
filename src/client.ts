@@ -5,11 +5,13 @@ import { dirname, importx } from "@discordx/importer";
 import { CronJob, CronTime } from "cron";
 import { StatsHandler } from "./stats-handler";
 import config from '../config.json'; 
+// import config from '../config_dev.json'; 
 import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
 import { isValidRandomKello } from "./util";
 import bonusTime from './bonus_time.json';
 import fs from 'fs';
+import fetch from "node-fetch";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -59,7 +61,7 @@ client.on("interactionCreate", (interaction: Interaction) => {
 });
 
 client.on('messageCreate', (message: Message) => {
-    checkForOpenCriticLink(message);
+    void checkForOpenCriticLink(message);
 
     if (message.channelId !== config.channelId) { return; }
 
@@ -186,9 +188,10 @@ async function fetchOpenCriticGameScore(gameId: number): Promise<number | undefi
         );
 
         const result = await response.text();
-        console.log(result);
 
-        const score: number = Math.round(JSON.parse(result).topCriticScore);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const score: number = Math.round((JSON.parse(result)).topCriticScore as number);
+
         return score;
     } catch (error) {
         console.error(error);
