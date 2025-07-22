@@ -29,7 +29,7 @@ client.on("ready", () => {
     // Create kello get jobs
     GET_TIMES.forEach(time => {
         new CronJob(`00 ${time.minute} ${time.hour} * * *`, () => {
-            kelloOn()
+            kelloOn(time.name)
         }, null, true, 'Europe/Helsinki');
 
         // End gets after the minute changes
@@ -88,8 +88,9 @@ async function run() {
 
 void run();
 
-function kelloOn() {
+function kelloOn(kelloName: string) {
     Globals.kelloOn = true;
+    Globals.kelloName = kelloName;
 }
 
 function kelloOff() {

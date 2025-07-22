@@ -1,5 +1,6 @@
 interface GlobalsModel {
     kelloOn: boolean;
+    kelloName: string;
     usersWhoGot: string[];
     commandGets: { userName: string, message?: string }[];
     getCooldowns: { [userId: string]: Date };
@@ -13,6 +14,7 @@ export interface KelloTime {
 
 export const Globals: GlobalsModel = {
     kelloOn: false,
+    kelloName: '',
     usersWhoGot: [],
     commandGets: [],
     getCooldowns: {},

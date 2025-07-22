@@ -5,4 +5,12 @@ export interface StatsModel {
     gets: number;
     streak: number;
     wins?: number;
+    perKello?: PerKelloStats;
+}
+
+export interface PerKelloStats {
+    [kelloName: string]: {
+        getCount: number;
+        streak: number;
+    }
 }

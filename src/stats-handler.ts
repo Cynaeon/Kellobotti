@@ -99,13 +99,38 @@ export abstract class StatsHandler {
             });
         }
 
+        StatsHandler.increasePerKelloStat(user);
+
         save();
     }
 
+    static increasePerKelloStat(user: User): void {
+        const userStat = stats.find(s => s.userId === user.id) as StatsModel | undefined;
+        if (!userStat || !Globals.kelloName) { return; }
+
+        if (!userStat.perKello) {
+            userStat.perKello = {};
+        }
+
+        if (!userStat.perKello[Globals.kelloName]) {
+            userStat.perKello[Globals.kelloName] = {
+                getCount: 0,
+                streak: 0,
+            };
+        }
+
+        userStat.perKello[Globals.kelloName].getCount++;
+        userStat.perKello[Globals.kelloName].streak++;
+    }
+
     static resetStreakForUsersExcept(userIds: string[]): void {
-        stats.forEach(stat => {
+        (stats as StatsModel[]).forEach(stat => {
             if (!userIds.includes(stat.userId)) {
                 stat.streak = 0;
+
+                if (stat.perKello?.[Globals.kelloName]) {
+                    stat.perKello[Globals.kelloName].streak = 0;
+                }
             }
         });
 
@@ -125,10 +150,11 @@ export abstract class StatsHandler {
     static resetSeason(): void {
         const winner = this.getTopList()[0];
         winner.wins = (winner.wins ?? 0) + 1;
-        stats.forEach(s => {
+        (stats as StatsModel[]).forEach(s => {
             s.score = 0;
             s.streak = 0;
             s.gets = 0;
+            s.perKello = undefined;
         });
 
         save();
