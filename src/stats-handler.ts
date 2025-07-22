@@ -211,5 +211,5 @@ function getPercentage(gets: number): string {
     }, 0);
     const totalGets = fullDays * GET_TIMES.length + getsToday;
     const percentage = totalGets ? gets / totalGets * 100 : 0;
-    return percentage.toFixed(2) + ' %';
+    return percentage.toFixed(0) + ' %';
 }
