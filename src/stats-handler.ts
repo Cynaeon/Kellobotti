@@ -39,7 +39,9 @@ export abstract class StatsHandler {
         const score = stat.score
         const gets = stat.gets;
         const percentage = getPercentage(gets);
-        return [standing.toString(), userName, score.toString(), percentage];
+        const momentumEmoji = getMomentumEmoji(stat);
+
+        return [standing.toString(), `${userName} ${momentumEmoji ?? ''}`, score.toString(), percentage];
     }
 
     static getVictoryTableEntryForUser(userId: string): string[] | undefined {
@@ -233,8 +235,16 @@ function getPercentage(gets: number): string {
     return percentage.toFixed(0) + ' %';
 }
 
-function getMomentumEmoji(gets: number): string | undefined {
-    if (gets < 10) { return undefined; }
-    // if get percentage during last 10 gets is >80%, return 🔥 
-    // if get percentage during last 10 gets is >10%, return 🛌
+function getMomentumEmoji(userStat: StatsModel): string | undefined {
+    if (!userStat.lastTenGets || userStat.lastTenGets.length < 10) { return undefined; }
+
+    const getsLastTenTimes = userStat.lastTenGets.filter(g => g).length;
+
+    if (getsLastTenTimes >= 8) {
+        return '🔥';
+    }
+
+    if (getsLastTenTimes <= 2) {
+        return '🛌';
+    }
 }
