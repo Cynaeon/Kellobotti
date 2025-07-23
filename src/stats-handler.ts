@@ -213,3 +213,9 @@ function getPercentage(gets: number): string {
     const percentage = totalGets ? gets / totalGets * 100 : 0;
     return percentage.toFixed(0) + ' %';
 }
+
+function getMomentumEmoji(gets: number): string | undefined {
+    if (gets < 10) { return undefined; }
+    // if get percentage during last 10 gets is >80%, return 🔥 
+    // if get percentage during last 10 gets is >10%, return 🛌
+}
