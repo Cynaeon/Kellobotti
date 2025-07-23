@@ -6,6 +6,7 @@ export interface StatsModel {
     streak: number;
     wins?: number;
     perKello?: PerKelloStats;
+    lastTenGets?: boolean[];
 }
 
 export interface PerKelloStats {

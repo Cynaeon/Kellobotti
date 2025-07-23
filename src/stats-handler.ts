@@ -96,10 +96,11 @@ export abstract class StatsHandler {
                 score: points,
                 gets: 1,
                 streak: 1,
-            });
+            } as StatsModel);
         }
 
         StatsHandler.increasePerKelloStat(user);
+        StatsHandler.addToLastGetList(user.id, true);
 
         save();
     }
@@ -123,6 +124,22 @@ export abstract class StatsHandler {
         userStat.perKello[Globals.kelloName].streak++;
     }
 
+    static addToLastGetList(userId: string, didGet: boolean): void {
+        const userStat = stats.find(s => s.userId === userId) as StatsModel | undefined;
+
+        if (!userStat) { return; }
+
+        if (!userStat.lastTenGets) {
+            userStat.lastTenGets = [];
+        }
+
+        userStat.lastTenGets.push(didGet);
+
+        if (userStat.lastTenGets.length >= 10) {
+            userStat.lastTenGets.pop();
+        }
+    }
+
     static resetStreakForUsersExcept(userIds: string[]): void {
         (stats as StatsModel[]).forEach(stat => {
             if (!userIds.includes(stat.userId)) {
@@ -131,6 +148,8 @@ export abstract class StatsHandler {
                 if (stat.perKello?.[Globals.kelloName]) {
                     stat.perKello[Globals.kelloName].streak = 0;
                 }
+
+                StatsHandler.addToLastGetList(stat.userId, false);
             }
         });
 
