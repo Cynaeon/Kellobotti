@@ -1,9 +1,10 @@
-import { StatsModel } from "./models/stats-model";
+import { PerKelloStats, StatsModel } from "./models/stats-model";
 import fs from 'fs';
 import { User } from "discord.js";
 import statistics from '../stats/stats.json';
 import { markdownTable } from 'markdown-table'
-import { GET_TIMES, Globals } from "./globals";
+import { GET_TIMES, Globals, KelloTime } from "./globals";
+import { addLeadingZero } from "./util";
 
 const tableLabels = ['', 'NAME', 'SCORE', 'PERCENTAGE'];
 const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
@@ -58,7 +59,8 @@ export abstract class StatsHandler {
     static getStatStringForUser(userId: string): string {
         const entry = StatsHandler.getStatTableEntryForUser(userId);
         if (!entry) { return 'No stats!'; }
-        return "```" + markdownTable([tableLabels, entry]) + "```";
+        const perKelloStats = getPerKelloStatsString(userId);
+        return "```" + `${markdownTable([tableLabels, entry])} \n\n${perKelloStats ?? ''}` + "```";
     }
 
     static getTotalKelloScore(): string {
@@ -233,7 +235,19 @@ function getPercentage(gets: number): string {
     }, 0);
     const totalGets = fullDays * GET_TIMES.length + getsToday;
     const percentage = totalGets ? gets / totalGets * 100 : 0;
-    return percentage.toFixed(0) + ' %';
+    return percentage.toFixed(0) + '%';
+}
+
+function getPercentageForKello(kelloName: string, gets: number): string {
+    const getTime = GET_TIMES.find(time => time.name === kelloName) as KelloTime;
+    const date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const pastDays = date.getDate() - 1;
+    const getTimePassedToday = hours > getTime.hour || hours === getTime.hour && minutes >= getTime.minute;
+    const totalPossibleGets = pastDays + (getTimePassedToday ? 1 : 0);
+    const percentage = totalPossibleGets ? gets / totalPossibleGets * 100 : 0;
+    return percentage.toFixed(0) + '%';
 }
 
 function getMomentumEmoji(userStat: StatsModel): string | undefined {
@@ -248,4 +262,19 @@ function getMomentumEmoji(userStat: StatsModel): string | undefined {
     if (getsLastTenTimes <= 2) {
         return '🛌';
     }
+}
+
+function getPerKelloStatsString(userId: string): string | undefined {
+    const stat = stats.find(s => s.userId === userId);
+    if (!stat?.perKello) { return undefined; }
+
+    const perKelloString = GET_TIMES.reduce((text, getTime) => {
+        const perKelloStat = (stat.perKello as PerKelloStats)[getTime.name];
+        const getCount = perKelloStat?.getCount ?? 0;
+        const percentage = getPercentageForKello(getTime.name, getCount);
+        const timeString = `${addLeadingZero(getTime.hour)}:${addLeadingZero(getTime.minute)}`;
+        return `${text} ${timeString}: ${percentage} (${perKelloStat?.streak ?? 0} streak) \n`;
+    }, '');
+
+    return perKelloString;
 }

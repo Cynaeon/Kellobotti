@@ -4,6 +4,7 @@ import { getDaysUntilSeasonReset } from "./client";
 import { GET_TIMES } from "./globals";
 import { StatsHandler } from "./stats-handler";
 import bonusTime from './bonus_time.json';
+import { addLeadingZero } from "./util";
 
 @Discord()
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -78,7 +79,6 @@ class BotCommands {
 
     @Slash("kellorules", { description: 'Current rules of kello.' })
     kellorules(interaction: CommandInteraction): void {
-        const addLeadingZero = (value: number) => value < 10 ? `0${value}` : value;
         const getTimes = GET_TIMES.map(time => {
             return `**${time.name}** (${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)})`;
         }).join(', ');

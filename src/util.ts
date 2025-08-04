@@ -8,3 +8,7 @@ export function isValidRandomKello(kello: KelloTime): boolean {
         || Math.abs(time.minute - kello.minute) > 1
     );
 }
+
+export function addLeadingZero(value: number): string {
+    return value < 10 ? `0${value}` : value.toString();
+}
