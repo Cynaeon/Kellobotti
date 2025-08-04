@@ -1,12 +1,13 @@
 import { StatsModel } from "./models/stats-model";
 import fs from 'fs';
 import { User } from "discord.js";
-import stats from '../stats/stats.json';
+import statistics from '../stats/stats.json';
 import { markdownTable } from 'markdown-table'
 import { GET_TIMES, Globals } from "./globals";
 
 const tableLabels = ['', 'NAME', 'SCORE', 'PERCENTAGE'];
 const victoryTableLabels = ['', 'NAME', 'VICTORIES'];
+const stats = statistics as StatsModel[]; // Type assert type on the json data.
 
 export abstract class StatsHandler {
     static getTopList(): StatsModel[] {
@@ -108,7 +109,7 @@ export abstract class StatsHandler {
     }
 
     static increasePerKelloStat(user: User): void {
-        const userStat = stats.find(s => s.userId === user.id) as StatsModel | undefined;
+        const userStat = stats.find(s => s.userId === user.id);
         if (!userStat || !Globals.kelloName) { return; }
 
         if (!userStat.perKello) {
@@ -127,7 +128,7 @@ export abstract class StatsHandler {
     }
 
     static addToLastGetList(userId: string, didGet: boolean): void {
-        const userStat = stats.find(s => s.userId === userId) as StatsModel | undefined;
+        const userStat = stats.find(s => s.userId === userId);
 
         if (!userStat) { return; }
 
@@ -143,7 +144,7 @@ export abstract class StatsHandler {
     }
 
     static resetStreakForUsersExcept(userIds: string[]): void {
-        (stats as StatsModel[]).forEach(stat => {
+        stats.forEach(stat => {
             if (!userIds.includes(stat.userId)) {
                 stat.streak = 0;
 
@@ -171,7 +172,7 @@ export abstract class StatsHandler {
     static resetSeason(): void {
         const winner = this.getTopList()[0];
         winner.wins = (winner.wins ?? 0) + 1;
-        (stats as StatsModel[]).forEach(s => {
+        stats.forEach(s => {
             s.score = 0;
             s.streak = 0;
             s.gets = 0;
