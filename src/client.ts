@@ -201,6 +201,11 @@ async function fetchOpenCriticGameScore(gameId: number): Promise<number | undefi
 }
 
 function getOpenCriticDissMessage(score: number): string {
+    if (score === -1) {
+        // Apparently "-1" means no reviews.
+        return 'Aika huono ei ees arvosteluja';
+    }
+
     const rnd = Math.random();
     const witcherinoScore = 93;
 
