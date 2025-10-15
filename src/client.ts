@@ -128,11 +128,11 @@ function thumbsUp(user: User, message: Message) {
         : '406099801814466560'; // Paavopeukku
 
     const userScore = StatsHandler.getUserScore(user);
-    const numberEmoji = NumberEmojis[userScore.toString()];
+    const numberEmoji = NumberEmojis[userScore.toString()] as string | undefined;
 
     // React after setTimeout because sometimes the reaction wasn't showing for the message author (though this is still happening...). 
     setTimeout(() => {
-        message.react(numberEmoji).catch(() => void message.react(emojiId).catch(() => void message.react('👌')));
+        message.react(numberEmoji ?? emojiId).catch(() => void message.react(emojiId).catch(() => void message.react('👌')));
     }, 1000);
 }
 
