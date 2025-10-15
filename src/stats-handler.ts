@@ -110,6 +110,10 @@ export abstract class StatsHandler {
         save();
     }
 
+    static getUserScore(user: User): number {
+        return stats.find(s => s.userId === user.id)?.score ?? 0;
+    }
+
     static increasePerKelloStat(user: User): void {
         const userStat = stats.find(s => s.userId === user.id);
         if (!userStat || !Globals.kelloName) { return; }

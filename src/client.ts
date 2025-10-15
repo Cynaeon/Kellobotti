@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { Client } from "discordx";
-import { Intents, Interaction, Message, TextChannel } from "discord.js";
+import { Intents, Interaction, Message, TextChannel, User } from "discord.js";
 import { dirname, importx } from "@discordx/importer";
 import { CronJob, CronTime } from "cron";
 import { StatsHandler } from "./stats-handler";
@@ -12,6 +12,7 @@ import { isValidRandomKello } from "./util";
 import bonusTime from './bonus_time.json';
 import fs from 'fs';
 import fetch from "node-fetch";
+import { NumberEmojis } from "./custom-emojis";
 
 const client = new Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
@@ -76,8 +77,8 @@ client.on('messageCreate', (message: Message) => {
         return;
     }
 
-    thumbsUp(message);
     StatsHandler.increaseUserScore(message.author, message.createdTimestamp);
+    thumbsUp(message.author, message);
     Globals.usersWhoGot.push(message.author.id);
 });
 
@@ -118,7 +119,7 @@ function initDailyRandomKello() {
     console.log(`Daily bonus kello set to ${bonusTime.hour}:${bonusTime.minute}`);
 }
 
-function thumbsUp(message: Message) {
+function thumbsUp(user: User, message: Message) {
     const sharedFirstPlace = StatsHandler.getTopList().length >= 2
         && StatsHandler.getTopList()[0].score === StatsHandler.getTopList()[1].score;
 
@@ -126,9 +127,12 @@ function thumbsUp(message: Message) {
         ? '890243525361405953' // Hymy hyytyy
         : '406099801814466560'; // Paavopeukku
 
-    // React after setTimeout because sometimes the reaction wasn't showing for the message author.
+    const userScore = StatsHandler.getUserScore(user);
+    const numberEmoji = NumberEmojis[userScore.toString()];
+
+    // React after setTimeout because sometimes the reaction wasn't showing for the message author (though this is still happening...). 
     setTimeout(() => {
-        message.react(emojiId).catch(() => void message.react('👌'));
+        message.react(numberEmoji).catch(() => void message.react(emojiId).catch(() => void message.react('👌')));
     }, 1000);
 }
 
