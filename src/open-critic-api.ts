@@ -34,7 +34,14 @@ async function getGameById(id: number): Promise<any> {
 
 async function getGame(searchTerm: string): Promise<SearchResult | undefined> {
     const res = await fetch(`${API_ADDRESS}/game/search?criteria=${searchTerm}`, HEADERS);
-    const results = JSON.parse(await res.text()) as SearchResult[];
+
+    if (res.status === 429) {
+        // Daily quota met.
+        return undefined;
+    }
+
+    const result = await res.text();
+    const results = JSON.parse(result) as SearchResult[];
     const closestMatch = results
         .filter(result => result.dist < 0.35)
         .sort((a, b) => a.dist - b.dist)

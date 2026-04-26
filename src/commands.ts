@@ -99,7 +99,7 @@ class BotCommands {
         } else {
             // No results.
             void interaction.reply({
-                content: 'No matches (or too many matches) found.',
+                content: 'Search failed...',
                 ephemeral: true
             });
         }
