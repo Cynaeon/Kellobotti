@@ -97,7 +97,7 @@ class BotCommands {
             const url = game.url;
             void interaction.reply(url);
         } else {
-            // No results.
+            // No results or daily quota exceeded.
             void interaction.reply({
                 content: 'Search failed...',
                 ephemeral: true
