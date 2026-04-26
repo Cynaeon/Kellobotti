@@ -4,7 +4,8 @@ import { getDaysUntilSeasonReset } from "./client";
 import { GET_TIMES } from "./globals";
 import { StatsHandler } from "./stats-handler";
 import bonusTime from './bonus_time.json';
-import { addLeadingZero } from "./util";
+import { addLeadingZero, getOpenCriticDissMessage } from "./util";
+import { openCriticApi } from "./open-critic-api";
 
 @Discord()
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -83,5 +84,24 @@ class BotCommands {
             return `**${time.name}** (${addLeadingZero(time.hour)}:${addLeadingZero(time.minute)})`;
         }).join(', ');
         void interaction.reply(`Current get times: ${getTimes}`);
+    }
+
+    @Slash("opencritic", { description: 'Get OpenCritic link for a game' })
+    async opencritic(
+        @SlashOption("name", { type: "STRING" }) name: string,
+        interaction: CommandInteraction
+    ): Promise<void> {
+        const result = await openCriticApi.getGame(name);
+        if (result) {
+            const game = await openCriticApi.getGameById(result.id);
+            const url = game.url;
+            void interaction.reply(url);
+        } else {
+            // No results.
+            void interaction.reply({
+                content: 'No matches (or too many matches) found.',
+                ephemeral: true
+            });
+        }
     }
 }

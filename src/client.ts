@@ -8,7 +8,7 @@ import config from '../config.json';
 // import config from '../config_dev.json'; 
 import { GET_TIMES, Globals } from "./globals";
 import moment from "moment";
-import { isValidRandomKello } from "./util";
+import { getOpenCriticDissMessage, isValidRandomKello } from "./util";
 import bonusTime from './bonus_time.json';
 import fs from 'fs';
 import fetch from "node-fetch";
@@ -202,24 +202,4 @@ async function fetchOpenCriticGameScore(gameId: number): Promise<number | undefi
         console.error(error);
         return undefined;
     }
-}
-
-function getOpenCriticDissMessage(score: number): string {
-    if (score === -1) {
-        // Apparently "-1" means no reviews.
-        return 'Aika huono ei ees arvosteluja';
-    }
-
-    const rnd = Math.random();
-    const witcherinoScore = 93;
-
-    if (rnd < 0.01 && score < witcherinoScore) {
-        return 'Witcher 3 on parempi';
-    }
-
-    if (rnd < 0.05) {
-        return `Quite bad not even ${score + 1}`;
-    }
-
-    return `Aika huono ei ees ${score + 1}`;
 }
