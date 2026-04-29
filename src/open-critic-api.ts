@@ -40,23 +40,12 @@ async function getGame(searchTerm: string): Promise<SearchResult | undefined> {
         return undefined;
     }
 
-    const result = await res.text();
-    const results = JSON.parse(result) as SearchResult[];
-
-    if (results.length === 1) {
-        return results.at(0);
-    }
-
-    const closestMatch = results
-        .filter(result => result.dist < 0.35)
+    const resText = await res.text();
+    let results = JSON.parse(resText) as SearchResult[];
+    return results
+        .filter(result => result.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .sort((a, b) => a.dist - b.dist)
         .at(0);
-
-    if (!closestMatch) {
-        return undefined;
-    }
-
-    return closestMatch;
 }
 
 export const openCriticApi = {
